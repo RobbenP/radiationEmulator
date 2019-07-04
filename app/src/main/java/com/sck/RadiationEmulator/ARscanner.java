@@ -47,8 +47,8 @@ import java.util.List;
 /**
  * This is an example activity that uses the Sceneform UX package to make common AR tasks easier.
  */
-public class HelloSceneformActivity extends AppCompatActivity {
-    private static final String TAG = HelloSceneformActivity.class.getSimpleName();
+public class ARscanner extends AppCompatActivity {
+    private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
 
     private static final int RELATIVE_WORLD_SIZE=10;
@@ -156,10 +156,9 @@ public class HelloSceneformActivity extends AppCompatActivity {
         anchorNode.setParent(arFragment.getArSceneView().getScene());
 
         // Create the transformable andy and add it to the anchor.
-        TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
+        Node andy = new Node();
         andy.setParent(anchorNode);
         andy.setRenderable(render);
-        andy.select();
         //if (myNodes.isEmpty()) myTextView.setVisibility(View.VISIBLE);
         myTextView.setVisibility(View.VISIBLE);
         myNodes.add(andy);
@@ -175,7 +174,8 @@ public class HelloSceneformActivity extends AppCompatActivity {
 //        int i = 0;
 //        for (Node node : arFragment.getArSceneView().getScene().getChildren()){
 //
-//            Log.d("Mijn debug", "Node number " + i + " with position " + node.getWorldPosition().toString());
+            Log.d("Mijn debug", "Node start with position " + start.getWorldPosition().toString());
+        Log.d("Mijn debug", "Node start with position " + end.getWorldPosition().toString());
 //            i++;
 //        }
         if (!myNodes.isEmpty()) {

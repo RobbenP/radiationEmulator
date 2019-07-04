@@ -17,7 +17,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HelloSceneformActivity">
+    tools:context=".ARscanner">
 
   <fragment android:name="com.google.ar.sceneform.ux.ArFragment"
       android:id="@+id/ux_fragment"
@@ -32,6 +32,14 @@
       android:clickable="false"
       android:textColor="?attr/editTextColor"
       android:visibility="visible" />
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="37dp"
+      android:background="?attr/colorPrimary"
+      android:minHeight="?attr/actionBarSize"
+      android:theme="?attr/actionBarTheme" />
 
 
 </FrameLayout>
