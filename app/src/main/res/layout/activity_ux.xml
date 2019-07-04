@@ -13,7 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,20 +28,24 @@
 
   <TextView
       android:id="@+id/textView"
-      android:layout_width="424dp"
+      android:layout_width="0dp"
       android:layout_height="111dp"
       android:background="?attr/colorPrimaryDark"
       android:clickable="false"
       android:textColor="?attr/editTextColor"
-      android:visibility="visible" />
+      android:visibility="visible"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
 
-  <android.support.v7.widget.Toolbar
-      android:id="@+id/toolbar"
-      android:layout_width="match_parent"
-      android:layout_height="37dp"
-      android:background="?attr/colorPrimary"
-      android:minHeight="?attr/actionBarSize"
-      android:theme="?attr/actionBarTheme" />
+  <Button
+      android:id="@+id/button"
+      android:layout_width="54dp"
+      android:layout_height="39dp"
+      android:layout_marginTop="32dp"
+      android:background="?attr/homeAsUpIndicator"
+      android:onClick="backToMain"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
 
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

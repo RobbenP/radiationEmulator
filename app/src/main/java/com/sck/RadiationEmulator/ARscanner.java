@@ -18,6 +18,7 @@ package com.sck.RadiationEmulator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -39,7 +40,7 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.Material;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
+import com.sck.RadiationEmulator.Model.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,6 @@ import java.util.List;
 public class ARscanner extends AppCompatActivity {
     private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
-
-    private static final int RELATIVE_WORLD_SIZE=10;
 
     private ArFragment arFragment;
     private ModelRenderable andyRenderable;
@@ -129,14 +128,14 @@ public class ARscanner extends AppCompatActivity {
                         return;
                     }
 
-                    if (start==null){
-                        start=addToScene(hitResult, andyRenderable);
-                    }else if (end==null){
+                    if (start == null) {
+                        start = addToScene(hitResult, andyRenderable);
+                    } else if (end == null) {
                         ModelRenderable redAndy = andyRenderable.makeCopy();
                         Material red = redAndy.getMaterial().makeCopy();
-                        red.setFloat3("baseColor", 255,0,0);
+                        red.setFloat3("baseColor", 255, 0, 0);
                         redAndy.setMaterial(red);
-                        end=addToScene(hitResult, redAndy);
+                        end = addToScene(hitResult, redAndy);
                     }
 
 
@@ -174,20 +173,24 @@ public class ARscanner extends AppCompatActivity {
 //        int i = 0;
 //        for (Node node : arFragment.getArSceneView().getScene().getChildren()){
 //
+        try {
             Log.d("Mijn debug", "Node start with position " + start.getWorldPosition().toString());
-        Log.d("Mijn debug", "Node start with position " + end.getWorldPosition().toString());
+            Log.d("Mijn debug", "Node end with position " + end.getWorldPosition().toString());
+        } catch (NullPointerException e) {
+            Log.d("Mijn debug", "waiting for start and end points");
+        }
 //            i++;
 //        }
         if (!myNodes.isEmpty()) {
             String text = "";
-            for (Node node : myNodes){
-                text += "2D distance to node is " + String.format("%.2f",calculate2dDistanceFromNodeToCamera(node)) +" 3D distance is " +String.format("%.2f",calculate3dDistanceFromNodeToCamera(node)) + "\n";
+            for (Node node : myNodes) {
+                text += "2D distance to node is " + String.format("%.2f", calculate2dDistanceFromNodeToCamera(node)) + " 3D distance is " + String.format("%.2f", calculate3dDistanceFromNodeToCamera(node)) + "\n";
             }
-            try{
-                double[] myCoords = myRelativeCoords();
-                text += "My relative coordinates are " +String.format("%.2f",myCoords[0]) + "," + String.format("%.2f",myCoords[1]);
+            try {
+                double[] myCoords = World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose());
+                text += "My relative coordinates are " + String.format("%.2f", myCoords[0]) + "," + String.format("%.2f", myCoords[1]);
                 //tex += "Distance between nodes is " + Math.pow(start.getWorldPosition().x - end.getWorldPosition().z,2 ) ;
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 text += "Waiting for start and end point te be set. ";
             }
 
@@ -196,40 +199,25 @@ public class ARscanner extends AppCompatActivity {
 
     }
 
-    private double calculate2dDistanceFromNodeToCamera(Node node){
+    private double calculate2dDistanceFromNodeToCamera(Node node) {
         Pose cameraPose = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose();
-        double dx = cameraPose.tx()-node.getWorldPosition().x;
-        double dz = cameraPose.tz()-node.getWorldPosition().z;
-        dz = dz*dz;
-        dx = dx*dx;
+
         //return Math.sqrt(Math.pow((cameraPose.tx()-node.getWorldPosition().x),2)+Math.pow(cameraPose.ty()-node.getWorldPosition().y,2));
-        return Math.sqrt(dz+dx);
+        return World.calculateDistance(cameraPose.tx(), cameraPose.tz(), node.getWorldPosition().x, node.getWorldPosition().z);
     }
 
-    private double calculate3dDistanceFromNodeToCamera(Node node){
+    private double calculate3dDistanceFromNodeToCamera(Node node) {
         Pose cameraPose = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose();
-        double dx = cameraPose.tx()-node.getWorldPosition().x;
-        double dy = cameraPose.ty()-node.getWorldPosition().y;
-        double dz = cameraPose.tz()-node.getWorldPosition().z;
-        dy = dy*dy;
-        dx = dx*dx;
-        dz = dz*dz;
+
         //return Math.sqrt(Math.pow((cameraPose.tx()-node.getWorldPosition().x),2)+Math.pow(cameraPose.ty()-node.getWorldPosition().y,2)+Math.pow(cameraPose.tz()-node.getWorldPosition().z,2));
-        return Math.sqrt(dy+dx+dz);
+        return World.calculateDistance(cameraPose.tx(), cameraPose.ty(), cameraPose.tz(), node.getWorldPosition().x, node.getWorldPosition().y, node.getWorldPosition().z);
     }
 
-    private double[] myRelativeCoords(){
-        double[] result = new double[2];
-        if(end==null){
-            throw new IllegalArgumentException("Start and end have to be set first!");
-        }
 
-        double xMultiplier = RELATIVE_WORLD_SIZE/(end.getWorldPosition().x- start.getWorldPosition().x);
-        double zMultiplier = RELATIVE_WORLD_SIZE/(end.getWorldPosition().z - start.getWorldPosition().z);
-        result[0] = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx() - start.getWorldPosition().x * xMultiplier;
-        result[1] = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz()- start.getWorldPosition().z * zMultiplier;
-
-        return result;
+    public void backToMain(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        this.startActivity(intent);
     }
+
 
 }
