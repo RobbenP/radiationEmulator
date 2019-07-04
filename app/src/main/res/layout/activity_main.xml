@@ -18,4 +18,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="218dp"
+        android:layout_height="59dp"
+        android:layout_marginBottom="44dp"
+        android:background="@android:color/holo_blue_bright"
+        android:onClick="goToSetUp"
+        android:text="Setup"
+        app:layout_constraintBottom_toTopOf="@+id/btnStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

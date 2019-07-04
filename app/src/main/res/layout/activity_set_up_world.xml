@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".setUpWorld">
+
+    <EditText
+        android:id="@+id/editX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="30dp"
+        android:ems="10"
+        android:hint="X-coordinates"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="30dp"
+        android:ems="10"
+        android:hint="X-coordinates"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editX" />
+
+    <EditText
+        android:id="@+id/editMeasure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="30dp"
+        android:ems="10"
+        android:hint="Measurement"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editY" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="128dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:text="Set the measurement"
+        app:layout_constraintEnd_toStartOf="@+id/editMeasure"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="128dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:text="Set the X-coordinate"
+        app:layout_constraintEnd_toStartOf="@+id/editX"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="128dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:text="Set the Y-coordinate"
+        app:layout_constraintEnd_toStartOf="@+id/editY"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="298dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="350dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="18dp"
+        android:background="@android:color/holo_blue_bright"
+        android:onClick="addToWorld"
+        android:text="Save coordinates with measurement"
+        app:layout_constraintBottom_toTopOf="@+id/button4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollListAll"
+        android:layout_width="395dp"
+        android:layout_height="134dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/allMeasurements"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="289dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="50dp"
+        android:background="@android:color/holo_blue_bright"
+        android:onClick="goToARscanner"
+        android:text="Start measurements "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button3" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="298dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="50dp"
+        android:background="@android:color/holo_blue_bright"
+        android:onClick="goToARscanner"
+        android:text="Start measurements "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button3" />
+
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="289dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="50dp"
+        android:background="@android:color/holo_blue_bright"
+        android:onClick="clearWorld"
+        android:text="Clear all coordinates"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button4" />
+
+
+</android.support.constraint.ConstraintLayout>

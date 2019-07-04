@@ -10,6 +10,9 @@ public class World {
     private static final int WORLD_SIZE = 100;
     private List<EmulatedMeasurement> measurementsList = new ArrayList<>();
 
+    public World() {
+    }
+
     public static int getWorldSize() {
         return WORLD_SIZE;
     }
@@ -50,8 +53,17 @@ public class World {
         return measurementsList;
     }
 
-    public void addMeasurement(EmulatedMeasurement measurement) {
-        if (!measurementsList.contains(measurement)) measurementsList.add(measurement);
+    public boolean addMeasurement(EmulatedMeasurement measurement) {
+        if (!measurementsList.contains(measurement)) {
+            measurementsList.add(measurement);
+            return true;
+        } else return false;
+
+
+    }
+
+    public void clearMeasurements() {
+        measurementsList.clear();
     }
 
     public void deleteMeasurement(EmulatedMeasurement measurement) {

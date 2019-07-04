@@ -21,31 +21,33 @@
     android:layout_height="match_parent"
     tools:context=".ARscanner">
 
-  <fragment android:name="com.google.ar.sceneform.ux.ArFragment"
-      android:id="@+id/ux_fragment"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
+    <fragment
+        android:id="@+id/ux_fragment"
+        android:name="com.google.ar.sceneform.ux.ArFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-  <TextView
-      android:id="@+id/textView"
-      android:layout_width="0dp"
-      android:layout_height="111dp"
-      android:background="?attr/colorPrimaryDark"
-      android:clickable="false"
-      android:textColor="?attr/editTextColor"
-      android:visibility="visible"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="111dp"
+        android:background="?attr/colorPrimaryDark"
+        android:clickable="false"
+        android:textColor="?attr/editTextColor"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-  <Button
-      android:id="@+id/button"
-      android:layout_width="54dp"
-      android:layout_height="39dp"
-      android:layout_marginTop="32dp"
-      android:background="?attr/homeAsUpIndicator"
-      android:onClick="backToMain"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/button"
+        android:layout_width="54dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="32dp"
+        android:background="?attr/homeAsUpIndicator"
+        android:onClick="backToMain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

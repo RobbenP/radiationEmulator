@@ -3,6 +3,13 @@ package com.sck.RadiationEmulator.Model;
 public class EmulatedMeasurement {
     private final double x;
     private final double y;
+    private final double measurement;
+
+    public EmulatedMeasurement(double x, double y, double measurement) {
+        this.x = x;
+        this.y = y;
+        this.measurement = measurement;
+    }
 
     public double getX() {
         return x;
@@ -16,27 +23,6 @@ public class EmulatedMeasurement {
         return measurement;
     }
 
-    private final double measurement;
-
-    public EmulatedMeasurement(double x, double y, double measurement) {
-        this.x = x;
-        this.y = y;
-        this.measurement = measurement;
-    }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null){
-            return false;
-        }else if (!(obj instanceof EmulatedMeasurement)){
-            return false;
-        }
-        EmulatedMeasurement other = (EmulatedMeasurement) obj;
-        return (other.getMeasurement() != measurement || other.getX() != x || other.getY()!= y);
-
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -46,9 +32,24 @@ public class EmulatedMeasurement {
         result = prime * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(y);
         result = prime * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(measurement);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
         return result;
 
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        } else if (!(obj instanceof EmulatedMeasurement)) {
+            return false;
+        }
+        EmulatedMeasurement other = (EmulatedMeasurement) obj;
+        return (other.getX() == x && other.getY() == y);
+
+    }
+
+    @Override
+    public String toString() {
+        return "X = " + x + ", Y = " + y + " and with a measurement of " + measurement;
     }
 }
