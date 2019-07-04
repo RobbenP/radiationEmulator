@@ -3,11 +3,13 @@ package com.sck.RadiationEmulator.Model;
 import com.google.ar.core.Pose;
 import com.google.ar.sceneform.Node;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class World {
+public class World implements Serializable {
     private static final int WORLD_SIZE = 100;
+    private static final long serialVersionUID = 6942458360697049542L;
     private List<EmulatedMeasurement> measurementsList = new ArrayList<>();
 
     public World() {

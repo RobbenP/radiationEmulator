@@ -1,6 +1,9 @@
 package com.sck.RadiationEmulator.Model;
 
-public class EmulatedMeasurement {
+import java.io.Serializable;
+
+public class EmulatedMeasurement implements Serializable {
+    private static final long serialVersionUID = -2136764637217359393L;
     private final double x;
     private final double y;
     private final double measurement;
@@ -10,6 +13,7 @@ public class EmulatedMeasurement {
         this.y = y;
         this.measurement = measurement;
     }
+
 
     public double getX() {
         return x;
@@ -52,4 +56,6 @@ public class EmulatedMeasurement {
     public String toString() {
         return "X = " + x + ", Y = " + y + " and with a measurement of " + measurement;
     }
+
+
 }

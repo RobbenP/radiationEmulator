@@ -1,5 +1,6 @@
 package com.sck.RadiationEmulator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,12 @@ public class setUpWorld extends AppCompatActivity {
         yComponent = findViewById(R.id.editY);
         measureComponent = findViewById(R.id.editMeasure);
         listAllMeasurements = findViewById(R.id.allMeasurements);
-        world = new World();
+        if (getIntent().getSerializableExtra("world") == null)
+            world = new World();
+        else {
+            world = (World) getIntent().getSerializableExtra("world");
+            updateMeasureList();
+        }
 
     }
 
@@ -45,6 +51,10 @@ public class setUpWorld extends AppCompatActivity {
         if (!world.addMeasurement(toAdd)) {
             Snackbar.make(v, "Already in list, not added", Snackbar.LENGTH_SHORT).show();
         }
+        updateMeasureList();
+    }
+
+    private void updateMeasureList() {
         String measureList = "";
         for (EmulatedMeasurement em : world.getMeasurementsList()) {
             measureList += em.toString() + "\n";
@@ -53,11 +63,21 @@ public class setUpWorld extends AppCompatActivity {
     }
 
     public void goToARscanner(View v) {
+        Intent intent = new Intent(this, ARscanner.class);
+        intent.putExtra("world", world);
+        this.startActivity(intent);
 
     }
 
     public void clearWorld(View v) {
         world.clearMeasurements();
         listAllMeasurements.setText("");
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("world", world);
+        this.startActivity(intent);
     }
 }

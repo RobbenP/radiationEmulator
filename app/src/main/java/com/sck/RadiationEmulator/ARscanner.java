@@ -51,6 +51,7 @@ import java.util.List;
 public class ARscanner extends AppCompatActivity {
     private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
+    private World world;
 
     private ArFragment arFragment;
     private ModelRenderable andyRenderable;
@@ -99,7 +100,8 @@ public class ARscanner extends AppCompatActivity {
         if (!checkIsSupportedDeviceOrFinish(this)) {
             return;
         }
-
+        world = (World) getIntent().getSerializableExtra("world");
+        if (world == null) world = new World();
         setContentView(R.layout.activity_ux);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         myTextView = findViewById(R.id.textView);
@@ -199,6 +201,13 @@ public class ARscanner extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("world", world);
+        this.startActivity(intent);
+    }
+
     private double calculate2dDistanceFromNodeToCamera(Node node) {
         Pose cameraPose = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose();
 
@@ -215,8 +224,7 @@ public class ARscanner extends AppCompatActivity {
 
 
     public void backToMain(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        this.startActivity(intent);
+        onBackPressed();
     }
 
 
