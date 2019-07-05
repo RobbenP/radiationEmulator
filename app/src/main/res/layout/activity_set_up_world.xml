@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".setUpWorld">
-
+    <!--TODO hier moet erges nog nen uitleg kome over wa da ik zjust bedoel mee die coords-->
     <EditText
         android:id="@+id/editX"
         android:layout_width="wrap_content"

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sck.RadiationEmulator.Model.EmulatedMeasurement;
 import com.sck.RadiationEmulator.Model.World;
@@ -37,6 +38,11 @@ public class setUpWorld extends AppCompatActivity {
 
     }
 
+    /**
+     * When the user has pressed submit this happens. It checks if all fields are filled in
+     * and if the values are within our world (possibly we should allow values outside the world).
+     * Also checks if it already has been added to avoid duplicates.
+     */
     public void addToWorld(View v) {
 
         if (xComponent.getText().toString().equals("") || yComponent.getText().toString().equals("") || measureComponent.getText().toString().equals("")) {
@@ -46,6 +52,17 @@ public class setUpWorld extends AppCompatActivity {
         double x = Double.parseDouble(xComponent.getText().toString());
         double y = Double.parseDouble(yComponent.getText().toString());
         double m = Double.parseDouble(measureComponent.getText().toString());
+        if (y > World.getWorldSize()) {
+            Toast.makeText(this, "The Y-coordinate cannot be bigger than " + World.getWorldSize() + "!",
+                    Toast.LENGTH_LONG).show();
+            yComponent.setText("");
+            return;
+        } else if (x > World.getWorldSize()) {
+            Toast.makeText(this, "The X-coordinate cannot be bigger than " + World.getWorldSize() + "!",
+                    Toast.LENGTH_LONG).show();
+            xComponent.setText("");
+            return;
+        }
 
         EmulatedMeasurement toAdd = new EmulatedMeasurement(x, y, m);
         if (!world.addMeasurement(toAdd)) {
@@ -54,6 +71,10 @@ public class setUpWorld extends AppCompatActivity {
         updateMeasureList();
     }
 
+    /**
+     * Displays all of the measurements in a TextView
+     */
+    //TODO change this to a listview so when pressed they can be removed
     private void updateMeasureList() {
         String measureList = "";
         for (EmulatedMeasurement em : world.getMeasurementsList()) {

@@ -7,6 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class that keeps track of the world: stores a list of all the emulatedMeasurements and the world size
+ * It also provides some methods to do calculations in the world
+ */
+//TODO instead of serializable let it implement parcelable, better for android performance
 public class World implements Serializable {
     private static final int WORLD_SIZE = 100;
     private static final long serialVersionUID = 6942458360697049542L;
@@ -19,6 +24,19 @@ public class World implements Serializable {
         return WORLD_SIZE;
     }
 
+    /**
+     * Calculates the coordinates from the real world camera coordinates to
+     * the coordinates in this world, based on 2 real world nodes start and end.
+     *
+     * @param start  start is a node in the real world that will be used as the
+     *               origin for this world
+     * @param end    end is a node in the real world that will be used as the
+     *               point (WORLD_SIZE,WORLD_SIZE) in this world
+     * @param camera camera is the pose of the camera in the real world, these
+     *               coordinates will be converted to the coordinates in this world
+     * @return returns the coordinates in this world of the camera
+     * in a 2 dimensional list
+     */
     public static double[] myRelativeCoords(Node start, Node end, Pose camera) {
         double[] result = new double[2];
         if (end == null) {
@@ -55,6 +73,14 @@ public class World implements Serializable {
         return measurementsList;
     }
 
+    /**
+     * Adds a EmulatedMeasurement to the list of EmulatedMeasurements of this world, if it
+     * has not been added yet.
+     *
+     * @param measurement The measurement that needs to be added
+     * @return <code>true</code> if the measurement is not in the EmulatedMeasurementlist
+     * <code>false</code> if the measurement is already in the EmulatedMeasurementlist
+     */
     public boolean addMeasurement(EmulatedMeasurement measurement) {
         if (!measurementsList.contains(measurement)) {
             measurementsList.add(measurement);
@@ -71,14 +97,24 @@ public class World implements Serializable {
     public void deleteMeasurement(EmulatedMeasurement measurement) {
         measurementsList.remove(measurement);
     }
+//TODO now it just uses the distance to EmulatedMeasurements to calculate the measurement, this probably has to be changed to a more scientific calculation
 
+    /**
+     * Calculates the measurement in a point in this world, taking into account all of
+     * the EmulatedMeasurements
+     *
+     * @param myRelativeLocation The location where there has to be a measurement
+     * @return The measurement on myRelativeLocation
+     */
     public double GetMeasurementHere(double[] myRelativeLocation) {
         if (measurementsList.isEmpty()) {
             return 0;
         } else {
             double result = 0;
-            for (EmulatedMeasurement m : measurementsList)
-                result += calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY());
+            for (EmulatedMeasurement m : measurementsList) {
+                double temp = m.getMeasurement() - calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY());
+                result += temp < 0 ? 0 : temp;
+            }
             return result;
         }
 

@@ -34,7 +34,6 @@ import android.widget.Toast;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
-import com.google.ar.core.Pose;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.Material;
@@ -45,9 +44,7 @@ import com.sck.RadiationEmulator.Model.World;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This is an example activity that uses the Sceneform UX package to make common AR tasks easier.
- */
+
 public class ARscanner extends AppCompatActivity {
     private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
@@ -100,8 +97,10 @@ public class ARscanner extends AppCompatActivity {
         if (!checkIsSupportedDeviceOrFinish(this)) {
             return;
         }
+        //if a world already exists fetch it, if not build a new world
         world = (World) getIntent().getSerializableExtra("world");
         if (world == null) world = new World();
+
         setContentView(R.layout.activity_ux);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         myTextView = findViewById(R.id.textView);
@@ -110,6 +109,7 @@ public class ARscanner extends AppCompatActivity {
 
         // When you build a Renderable, Sceneform loads its resources in the background while returning
         // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
+        //todo find a better 3D model, instead of the android icon
         ModelRenderable.builder()
                 .setSource(this, R.raw.andy)
                 .build()
@@ -124,6 +124,11 @@ public class ARscanner extends AppCompatActivity {
                         });
 
 
+        /**
+         * Listener for detecting taps on recognized surfaces
+         *
+         * only listens for 2 taps, the starting point and the end point. If those are already found ignore tap
+         */
         arFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
                     if (andyRenderable == null) {
@@ -150,6 +155,11 @@ public class ARscanner extends AppCompatActivity {
         });
     }
 
+    /**
+     * @param hitResult Position where the renderable has to be placed
+     * @param render    3D object that has to be placed
+     * @return Node of the newly placed object
+     */
     private Node addToScene(HitResult hitResult, ModelRenderable render) {
         // Create the Anchor.
         Anchor anchor = hitResult.createAnchor();
@@ -167,6 +177,9 @@ public class ARscanner extends AppCompatActivity {
         return andy;
     }
 
+    /**
+     * Executes on every update
+     */
     private void cameraMoved() {
 
 
@@ -186,7 +199,8 @@ public class ARscanner extends AppCompatActivity {
         if (!myNodes.isEmpty()) {
             String text = "";
             for (Node node : myNodes) {
-                text += "2D distance to node is " + String.format("%.2f", calculate2dDistanceFromNodeToCamera(node)) + " 3D distance is " + String.format("%.2f", calculate3dDistanceFromNodeToCamera(node)) + "\n";
+                text += "2D distance to node is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), node.getWorldPosition().x, node.getWorldPosition().z));
+                text += " 3D distance is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty(), node.getWorldPosition().x, node.getWorldPosition().z, node.getWorldPosition().y)) + "\n";
             }
             try {
                 double[] myCoords = World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose());
@@ -201,25 +215,14 @@ public class ARscanner extends AppCompatActivity {
 
     }
 
+    /**
+     * overriding default method to try and make sure we do not lose our world
+     */
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("world", world);
         this.startActivity(intent);
-    }
-
-    private double calculate2dDistanceFromNodeToCamera(Node node) {
-        Pose cameraPose = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose();
-
-        //return Math.sqrt(Math.pow((cameraPose.tx()-node.getWorldPosition().x),2)+Math.pow(cameraPose.ty()-node.getWorldPosition().y,2));
-        return World.calculateDistance(cameraPose.tx(), cameraPose.tz(), node.getWorldPosition().x, node.getWorldPosition().z);
-    }
-
-    private double calculate3dDistanceFromNodeToCamera(Node node) {
-        Pose cameraPose = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose();
-
-        //return Math.sqrt(Math.pow((cameraPose.tx()-node.getWorldPosition().x),2)+Math.pow(cameraPose.ty()-node.getWorldPosition().y,2)+Math.pow(cameraPose.tz()-node.getWorldPosition().z,2));
-        return World.calculateDistance(cameraPose.tx(), cameraPose.ty(), cameraPose.tz(), node.getWorldPosition().x, node.getWorldPosition().y, node.getWorldPosition().z);
     }
 
 

@@ -2,6 +2,10 @@ package com.sck.RadiationEmulator.Model;
 
 import java.io.Serializable;
 
+/**
+ * A claas to store a measurement to 2d coordinates, for the possibility to add more information
+ */
+//TODO instead of serializable let it implement parcelable, better for android performance
 public class EmulatedMeasurement implements Serializable {
     private static final long serialVersionUID = -2136764637217359393L;
     private final double x;
