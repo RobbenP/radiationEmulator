@@ -62,3 +62,19 @@ sceneform.asset('sampledata/models/andy.obj',
         'default',
         'sampledata/models/andy.sfa',
         'src/main/res/raw/andy')
+
+
+sceneform.asset('sampledata/models/exlamationpoint.obj',
+        'default',
+        'sampledata/models/exlamationpoint.sfa',
+        'src/main/assets/exlamationpoint')
+
+sceneform.asset('sampledata/models/tinker.obj',
+        'default',
+        'sampledata/models/tinker.sfa',
+        'src/main/assets/tinker')
+
+sceneform.asset('sampledata/models/exclamation.obj',
+        'default',
+        'sampledata/models/exclamation.sfa',
+        'src/main/assets/exclamation')

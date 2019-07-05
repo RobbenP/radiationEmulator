@@ -51,6 +51,20 @@ public class World implements Serializable {
         return result;
     }
 
+    public static double[] myRelativeCoords(Node start, Node end, Node camera) {
+        double[] result = new double[2];
+        if (end == null) {
+            throw new IllegalArgumentException("Start and end have to be set first!");
+        }
+
+        double xMultiplier = WORLD_SIZE / (end.getWorldPosition().x - start.getWorldPosition().x);
+        double zMultiplier = WORLD_SIZE / (end.getWorldPosition().z - start.getWorldPosition().z);
+        result[0] = (camera.getWorldPosition().x - start.getWorldPosition().x) * xMultiplier;
+        result[1] = (camera.getWorldPosition().z - start.getWorldPosition().z) * zMultiplier;
+
+        return result;
+    }
+
     public static double calculateDistance(double x1, double y1, double x2, double y2) {
         double dx = x1 - x2;
         double dy = y1 - y2;
@@ -101,7 +115,7 @@ public class World implements Serializable {
 
     /**
      * Calculates the measurement in a point in this world, taking into account all of
-     * the EmulatedMeasurements
+     * the EmulatedMeasurements. Does not use realworld distance but distance in this world
      *
      * @param myRelativeLocation The location where there has to be a measurement
      * @return The measurement on myRelativeLocation

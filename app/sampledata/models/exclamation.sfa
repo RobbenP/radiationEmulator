@@ -1,0 +1,42 @@
+{
+  materials: [
+    {
+      name: 'color_15277357',
+      parameters: [
+        {
+          baseColor: null,
+        },
+        {
+          baseColorTint: [
+            0.91372500000000001,
+            0.11372500000000001,
+            0.17647099999999999,
+            1,
+          ],
+        },
+        {
+          metallic: 0,
+        },
+        {
+          roughness: 1,
+        },
+        {
+          opacity: null,
+        },
+      ],
+      source: 'build/sceneform_sdk/default_materials/obj_material.sfm',
+    },
+  ],
+  model: {
+    attributes: [
+      'Position',
+      'Orientation',
+    ],
+    collision: {},
+    file: 'sampledata/models/exclamation.obj',
+    name: 'exclamation',
+    recenter: 'root',
+    scale: 0.193573,
+  },
+  version: '0.54:2',
+}

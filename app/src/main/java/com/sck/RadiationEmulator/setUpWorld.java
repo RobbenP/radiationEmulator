@@ -68,6 +68,9 @@ public class setUpWorld extends AppCompatActivity {
         if (!world.addMeasurement(toAdd)) {
             Snackbar.make(v, "Already in list, not added", Snackbar.LENGTH_SHORT).show();
         }
+        xComponent.setText("");
+        yComponent.setText("");
+        measureComponent.setText("");
         updateMeasureList();
     }
 

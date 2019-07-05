@@ -20,6 +20,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -48,6 +49,9 @@ import java.util.List;
 public class ARscanner extends AppCompatActivity {
     private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
+
+    private static final boolean USE_RELATIVE_DISTANCES = true;
+
     private World world;
 
     private ArFragment arFragment;
@@ -111,7 +115,8 @@ public class ARscanner extends AppCompatActivity {
         // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
         //todo find a better 3D model, instead of the android icon
         ModelRenderable.builder()
-                .setSource(this, R.raw.andy)
+                //.setSource(this, R.raw.andy)
+                .setSource(this, Uri.parse("exclamation.sfb"))
                 .build()
                 .thenAccept(renderable -> andyRenderable = renderable)
                 .exceptionally(
@@ -188,6 +193,14 @@ public class ARscanner extends AppCompatActivity {
 //        int i = 0;
 //        for (Node node : arFragment.getArSceneView().getScene().getChildren()){
 //
+        myTextView.setText("");
+
+        if (start != null && end != null) {
+            double measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose()));
+            String text = "Measurement here = " + measurementHere + "\n";
+            myTextView.setText(text);
+        }
+
         try {
             Log.d("Mijn debug", "Node start with position " + start.getWorldPosition().toString());
             Log.d("Mijn debug", "Node end with position " + end.getWorldPosition().toString());
@@ -196,22 +209,37 @@ public class ARscanner extends AppCompatActivity {
         }
 //            i++;
 //        }
-        if (!myNodes.isEmpty()) {
+        if (!myNodes.isEmpty() && end != null) {
             String text = "";
-            for (Node node : myNodes) {
-                text += "2D distance to node is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), node.getWorldPosition().x, node.getWorldPosition().z));
-                text += " 3D distance is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty(), node.getWorldPosition().x, node.getWorldPosition().z, node.getWorldPosition().y)) + "\n";
+            double[] myCoords;
+            double[] nodeCoords = new double[2];
+            if (USE_RELATIVE_DISTANCES) {
+                myCoords = World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose());
+
+            } else {
+                myCoords[0] = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx();
+                myCoords[1] = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz();
+
             }
-            try {
-                double[] myCoords = World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose());
-                text += "My relative coordinates are " + String.format("%.2f", myCoords[0]) + "," + String.format("%.2f", myCoords[1]);
-                //tex += "Distance between nodes is " + Math.pow(start.getWorldPosition().x - end.getWorldPosition().z,2 ) ;
-            } catch (IllegalArgumentException e) {
-                text += "Waiting for start and end point te be set. ";
+            for (Node node : myNodes) {
+                if (USE_RELATIVE_DISTANCES) {
+                    nodeCoords = World.myRelativeCoords(start, end, node);
+
+                } else {
+                    nodeCoords[0] = node.getWorldPosition().x;
+                    nodeCoords[1] = node.getWorldPosition().z;
+                }
+                text += "2D distance to node is " + String.format("%.2f", World.calculateDistance(myCoords[0], myCoords[1], nodeCoords[0], nodeCoords[1])) + "\n";
+                //text += " 3D distance is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty(), node.getWorldPosition().x, node.getWorldPosition().z, node.getWorldPosition().y)) + "\n";
             }
 
-            myTextView.setText(text);
-        }
+
+            text += "My relative coordinates are " + String.format("%.2f", myCoords[0]) + "," + String.format("%.2f", myCoords[1]) + "\n";
+            //tex += "Distance between nodes is " + Math.pow(start.getWorldPosition().x - end.getWorldPosition().z,2 ) ;
+
+
+            myTextView.append(text);
+        } else myTextView.append("Waiting for start and end point te be set. \n");
 
     }
 
