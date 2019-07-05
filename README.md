@@ -64,3 +64,8 @@ This class stores a list of all the EmulatedMeasurements and a static field for 
 For now it just calculates the distance between your location and the measurements and subtracts the distance from the measurement, if it's less than zero it becomes zero.
 
 This is probably not the right way to do it, but it provides a method which can always be altered in a later stage.
+
+## Build warning
+
+When building we get the following warning: "WARNING: API 'variant.getMergeAssets()' is obsolete and has been replaced with 'variant.getMergeAssetsProvider()'. It will be removed at the end of 2019." This is a sceneform bug that is in the hands of those developpers. They have acknowledged the problem and should fix it some time in the future, [github reference](https://github.com/google-ar/sceneform-android-sdk/issues/513).
+
