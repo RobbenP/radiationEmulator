@@ -48,3 +48,19 @@ Pros:
 * Multiple devices can have the same start and end points, resulting in comparable measurements
 * No need for extra materials like print outs
 * More accurate (?)
+
+## Models EmulatedMeasurement and World
+
+### EmulatedMeasurement
+
+This class is used to store a measurement on a 2D coordinate, 2D because height feels like it's a bit irrelevant and would just add more innaccuracy. Made into a class instead of an array[3] because it makes it more expendable.
+
+### World
+
+This class stores a list of all the EmulatedMeasurements and a static field for the virtual world size. It also provides methods to get the distance between points in the world, to translate the real world coordinates to the coordinates in the virtual world and a method to calculate the measurement on a certain point.
+
+#### Calculating measurement
+
+For now it just calculates the distance between your location and the measurements and subtracts the distance from the measurement, if it's less than zero it becomes zero.
+
+This is probably not the right way to do it, but it provides a method which can always be altered in a later stage.
