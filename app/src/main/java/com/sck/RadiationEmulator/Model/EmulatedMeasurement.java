@@ -1,16 +1,29 @@
 package com.sck.RadiationEmulator.Model;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * A claas to store a measurement to 2d coordinates, for the possibility to add more information
  */
-//TODO instead of serializable let it implement parcelable, better for android performance
-public class EmulatedMeasurement implements Serializable {
+//Done instead of serializable let it implement parcelable, better for android performance
+public class EmulatedMeasurement implements Parcelable {
+    public static final Creator<EmulatedMeasurement> CREATOR = new Creator<EmulatedMeasurement>() {
+        @Override
+        public EmulatedMeasurement createFromParcel(Parcel in) {
+            return new EmulatedMeasurement(in);
+        }
+
+        @Override
+        public EmulatedMeasurement[] newArray(int size) {
+            return new EmulatedMeasurement[size];
+        }
+    };
     private static final long serialVersionUID = -2136764637217359393L;
     private final double x;
     private final double y;
     private final double measurement;
+
 
     public EmulatedMeasurement(double x, double y, double measurement) {
         this.x = x;
@@ -18,6 +31,11 @@ public class EmulatedMeasurement implements Serializable {
         this.measurement = measurement;
     }
 
+    private EmulatedMeasurement(Parcel in) {
+        measurement = in.readDouble();
+        x = in.readDouble();
+        y = in.readDouble();
+    }
 
     public double getX() {
         return x;
@@ -61,5 +79,15 @@ public class EmulatedMeasurement implements Serializable {
         return "X = " + x + ", Y = " + y + " and with a measurement of " + measurement;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeDouble(this.measurement);
+        parcel.writeDouble(this.x);
+        parcel.writeDouble(this.y);
+    }
 }

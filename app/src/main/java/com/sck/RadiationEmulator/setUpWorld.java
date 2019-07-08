@@ -29,10 +29,10 @@ public class setUpWorld extends AppCompatActivity {
         yComponent = findViewById(R.id.editY);
         measureComponent = findViewById(R.id.editMeasure);
         listAllMeasurements = findViewById(R.id.allMeasurements);
-        if (getIntent().getSerializableExtra("world") == null)
+        if (getIntent().getParcelableExtra("world") == null)
             world = new World();
         else {
-            world = (World) getIntent().getSerializableExtra("world");
+            world = (World) getIntent().getParcelableExtra("world");
             updateMeasureList();
         }
 
@@ -88,6 +88,7 @@ public class setUpWorld extends AppCompatActivity {
 
     public void goToARscanner(View v) {
         Intent intent = new Intent(this, ARscanner.class);
+
         intent.putExtra("world", world);
         this.startActivity(intent);
 

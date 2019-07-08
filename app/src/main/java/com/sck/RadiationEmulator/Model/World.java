@@ -1,9 +1,11 @@
 package com.sck.RadiationEmulator.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.ar.core.Pose;
 import com.google.ar.sceneform.Node;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +13,38 @@ import java.util.List;
  * A class that keeps track of the world: stores a list of all the emulatedMeasurements and the world size
  * It also provides some methods to do calculations in the world
  */
-//TODO instead of serializable let it implement parcelable, better for android performance
-public class World implements Serializable {
+//done instead of serializable let it implement parcelable, better for android performance
+public class World implements Parcelable {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<World> CREATOR = new Parcelable.Creator<World>() {
+        @Override
+        public World createFromParcel(Parcel in) {
+            return new World(in);
+        }
+
+        @Override
+        public World[] newArray(int size) {
+            return new World[size];
+        }
+    };
     private static final int WORLD_SIZE = 100;
     private static final long serialVersionUID = 6942458360697049542L;
     private List<EmulatedMeasurement> measurementsList = new ArrayList<>();
 
+//    private World(Parcel in) {
+//        measurementsList = in.readList();
+//    }
+
     public World() {
+    }
+
+    protected World(Parcel in) {
+        if (in.readByte() == 0x01) {
+            measurementsList = new ArrayList<EmulatedMeasurement>();
+            in.readList(measurementsList, EmulatedMeasurement.class.getClassLoader());
+        } else {
+            measurementsList = null;
+        }
     }
 
     public static int getWorldSize() {
@@ -86,6 +113,7 @@ public class World implements Serializable {
     public List<EmulatedMeasurement> getMeasurementsList() {
         return measurementsList;
     }
+//TODO now it just uses the distance to EmulatedMeasurements to calculate the measurement, this probably has to be changed to a more scientific calculation
 
     /**
      * Adds a EmulatedMeasurement to the list of EmulatedMeasurements of this world, if it
@@ -111,7 +139,6 @@ public class World implements Serializable {
     public void deleteMeasurement(EmulatedMeasurement measurement) {
         measurementsList.remove(measurement);
     }
-//TODO now it just uses the distance to EmulatedMeasurements to calculate the measurement, this probably has to be changed to a more scientific calculation
 
     /**
      * Calculates the measurement in a point in this world, taking into account all of
@@ -132,5 +159,20 @@ public class World implements Serializable {
             return result;
         }
 
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (measurementsList == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(measurementsList);
+        }
     }
 }

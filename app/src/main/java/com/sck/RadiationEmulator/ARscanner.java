@@ -108,7 +108,7 @@ public class ARscanner extends AppCompatActivity {
             return;
         }
         //if a world already exists fetch it, if not build a new world
-        world = (World) getIntent().getSerializableExtra("world");
+        world = getIntent().getParcelableExtra("world");
         if (world == null) world = new World();
 
         setContentView(R.layout.activity_ux);

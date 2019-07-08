@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        world = (World) getIntent().getSerializableExtra("world");
+        world = getIntent().getParcelableExtra("world");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
