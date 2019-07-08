@@ -6,11 +6,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.sck.RadiationEmulator.Model.EmulatedMeasurement;
 import com.sck.RadiationEmulator.Model.World;
+import com.sck.common.helpers.EmulatedMeasurementAdapter;
 
 public class setUpWorld extends AppCompatActivity {
 
@@ -18,7 +19,9 @@ public class setUpWorld extends AppCompatActivity {
     private EditText xComponent;
     private EditText yComponent;
     private EditText measureComponent;
-    private TextView listAllMeasurements;
+    private ListView listAllMeasurements;
+
+    private EmulatedMeasurementAdapter myAdapter;
 
     @Override
 
@@ -28,11 +31,12 @@ public class setUpWorld extends AppCompatActivity {
         xComponent = findViewById(R.id.editX);
         yComponent = findViewById(R.id.editY);
         measureComponent = findViewById(R.id.editMeasure);
-        listAllMeasurements = findViewById(R.id.allMeasurements);
+        listAllMeasurements = findViewById(R.id.scrollListAll);
+        listAllMeasurements.setVisibility(View.VISIBLE);
         if (getIntent().getParcelableExtra("world") == null)
             world = new World();
         else {
-            world = (World) getIntent().getParcelableExtra("world");
+            world = getIntent().getParcelableExtra("world");
             updateMeasureList();
         }
 
@@ -79,11 +83,20 @@ public class setUpWorld extends AppCompatActivity {
      */
     //TODO change this to a listview so when pressed they can be removed
     private void updateMeasureList() {
-        String measureList = "";
-        for (EmulatedMeasurement em : world.getMeasurementsList()) {
-            measureList += em.toString() + "\n";
-        }
-        listAllMeasurements.setText(measureList);
+//        String measureList = "";
+//        for (EmulatedMeasurement em : world.getMeasurementsList()) {
+//            measureList += em.toString() + "\n";
+//        }
+        //listAllMeasurements.setText(measureList);
+        myAdapter = new EmulatedMeasurementAdapter(world.getMeasurementsList(), getApplicationContext());
+        listAllMeasurements.setAdapter(myAdapter);
+        listAllMeasurements.setOnItemClickListener((adapterView, view, i, l) -> {
+            EmulatedMeasurement measurement = world.getMeasurementsList().get(i);
+            world.deleteMeasurement(measurement);
+            Snackbar.make(view, measurement.toString() + " has been removed!", Snackbar.LENGTH_SHORT).show();
+            updateMeasureList();
+        });
+
     }
 
     public void goToARscanner(View v) {
@@ -96,7 +109,7 @@ public class setUpWorld extends AppCompatActivity {
 
     public void clearWorld(View v) {
         world.clearMeasurements();
-        listAllMeasurements.setText("");
+        updateMeasureList();
     }
 
     @Override

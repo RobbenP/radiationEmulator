@@ -19,7 +19,7 @@ public class EmulatedMeasurement implements Parcelable {
             return new EmulatedMeasurement[size];
         }
     };
-    private static final long serialVersionUID = -2136764637217359393L;
+
     private final double x;
     private final double y;
     private final double measurement;
@@ -76,7 +76,7 @@ public class EmulatedMeasurement implements Parcelable {
 
     @Override
     public String toString() {
-        return "X = " + x + ", Y = " + y + " and with a measurement of " + measurement;
+        return "X = " + x + ", Y = " + y + " and measurement = " + measurement;
     }
 
     @Override

@@ -28,7 +28,6 @@ public class World implements Parcelable {
         }
     };
     private static final int WORLD_SIZE = 100;
-    private static final long serialVersionUID = 6942458360697049542L;
     private List<EmulatedMeasurement> measurementsList = new ArrayList<>();
 
 //    private World(Parcel in) {
