@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/ux_fragment"
-        android:name="com.google.ar.sceneform.ux.ArFragment"
+        android:name="com.sck.RadiationEmulator.AugmentedImageFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -48,6 +48,15 @@
         android:onClick="backToMain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_view_fit_to_scan"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:contentDescription="@string/fit_image_to_scan"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fit_to_scan" />
 
 
 </android.support.constraint.ConstraintLayout>
