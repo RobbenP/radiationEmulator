@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sck.RadiationEmulator.Model.EmulatedMeasurement;
@@ -39,7 +40,17 @@ public class setUpWorld extends AppCompatActivity {
             world = getIntent().getParcelableExtra("world");
             updateMeasureList();
         }
+        checkWhetherToShowExplanation();
 
+    }
+
+    private void checkWhetherToShowExplanation() {
+        TextView explanation = findViewById(R.id.explanation);
+        if (world.getMeasurementsList().isEmpty()) {
+            explanation.setVisibility(View.VISIBLE);
+            explanation.setText("The start and end point we set in Augmented Reality, are the start and end of a square (" + World.getWorldSize() + " by " + World.getWorldSize() + ") in our virtual world. Here you can set measurements using these virtual world coordinates." +
+                    "\n\nAfter adding a measurement it will be shown in a list here, if you click on of the coordinates it will be removed from the list.");
+        } else explanation.setVisibility(View.GONE);
     }
 
     /**
@@ -53,6 +64,7 @@ public class setUpWorld extends AppCompatActivity {
             Snackbar.make(v, "Please fill in the fields!", Snackbar.LENGTH_SHORT).show();
             return;
         }
+
         double x = Double.parseDouble(xComponent.getText().toString());
         double y = Double.parseDouble(yComponent.getText().toString());
         double m = Double.parseDouble(measureComponent.getText().toString());
@@ -76,12 +88,13 @@ public class setUpWorld extends AppCompatActivity {
         yComponent.setText("");
         measureComponent.setText("");
         updateMeasureList();
+        checkWhetherToShowExplanation();
     }
 
     /**
      * Displays all of the measurements in a TextView
      */
-    //TODO change this to a listview so when pressed they can be removed
+    //done change this to a listview so when pressed they can be removed
     private void updateMeasureList() {
 //        String measureList = "";
 //        for (EmulatedMeasurement em : world.getMeasurementsList()) {
@@ -95,6 +108,7 @@ public class setUpWorld extends AppCompatActivity {
             world.deleteMeasurement(measurement);
             Snackbar.make(view, measurement.toString() + " has been removed!", Snackbar.LENGTH_SHORT).show();
             updateMeasureList();
+            checkWhetherToShowExplanation();
         });
 
     }
