@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sck.RadiationEmulator;
+package com.sck.RadiationEmulator.Model;
 
 import android.content.Context;
 import android.util.Log;
@@ -24,6 +24,7 @@ import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.sck.RadiationEmulator.R;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -39,9 +40,7 @@ public class AugmentedImageNode extends AnchorNode {
     // the error handling and asynchronous loading.  The loading is started with the
     // first construction of an instance, and then used when the image is set.
     private static CompletableFuture<ModelRenderable> startAndStop;
-    private static CompletableFuture<ModelRenderable> urCorner;
-    private static CompletableFuture<ModelRenderable> lrCorner;
-    private static CompletableFuture<ModelRenderable> llCorner;
+
     // The augmented image represented by this node.
     private AugmentedImage image;
 

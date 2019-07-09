@@ -17,6 +17,7 @@ package com.sck.RadiationEmulator;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -32,6 +33,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.SingleValueDataSet;
+import com.anychart.charts.LinearGauge;
+import com.anychart.enums.Layout;
+import com.anychart.enums.MarkerType;
+import com.anychart.enums.Orientation;
+import com.anychart.enums.Position;
+import com.anychart.scales.OrdinalColor;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
@@ -42,6 +52,7 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.Material;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.sck.RadiationEmulator.Model.AugmentedImageNode;
 import com.sck.RadiationEmulator.Model.World;
 import com.sck.common.helpers.SnackbarHelper;
 
@@ -53,7 +64,7 @@ import java.util.Map;
 public class ARscanner extends AppCompatActivity {
     // if set to true it will use image recognition to set start and end point
     // if set to false it will use a tap on the screen
-    public static final boolean USE_AUGMENTED_IMAGES = false;
+    public static final boolean USE_AUGMENTED_IMAGES = true;
     private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
     //if set to true it wil use distancing in our virtual world, if set tot true it will use real world distancing
@@ -67,6 +78,9 @@ public class ARscanner extends AppCompatActivity {
     private Node end = null;
     private TextView myTextView;
     private ImageView fitToScanView;
+    private AnyChartView anyChartView;
+    private LinearGauge linearGauge;
+    private SingleValueDataSet dataSet;
 
     /**
      * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
@@ -103,6 +117,7 @@ public class ARscanner extends AppCompatActivity {
     // FutureReturnValueIgnored is not valid
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         if (!checkIsSupportedDeviceOrFinish(this)) {
             return;
@@ -117,6 +132,10 @@ public class ARscanner extends AppCompatActivity {
         //myTextView.setVisibility(View.INVISIBLE);
         fitToScanView = findViewById(R.id.image_view_fit_to_scan);
         fitToScanView.setVisibility(View.INVISIBLE);
+        anyChartView = findViewById(R.id.any_chart_view);
+        anyChartView.setVisibility(View.INVISIBLE);
+        dataSet = new SingleValueDataSet(new Double[]{20D});
+        setupLinearColorScale();
 
         if (!USE_AUGMENTED_IMAGES) setupTapOnScreendForStartAndEnd();
 
@@ -128,8 +147,54 @@ public class ARscanner extends AppCompatActivity {
         });
     }
 
-    private void setupImageRecognitionForStartAndEnd() {
+    private void setupLinearColorScale() {
+        linearGauge = AnyChart.linear();
+        linearGauge.layout(Layout.HORIZONTAL);
+        linearGauge.label(0)
+                .position(Position.CENTER_BOTTOM)
+                .anchor(com.anychart.enums.Anchor.CENTER_BOTTOM)
+                //.offsetY("50px")
+                //.offsetX("50px")
+                .fontColor("black")
+                .fontSize(17)
+                .text("Some text");
+        //todo
+        OrdinalColor scaleBarColorScale = OrdinalColor.instantiate();
+        scaleBarColorScale.ranges(new String[]{
+                "{ from: 0, to: 10, color: ['green 0.5'] }",
+                "{ from: 10, to: 40, color: ['yellow 0.5'] }",
+                "{ from: 40, to: 100, color: ['orange 0.5'] }",
+                "{ from: 100, to: 200, color: ['red 0.5'] }"
+        });
+        linearGauge.scaleBar(0)
+                .width("5%")
+                .colorScale(scaleBarColorScale);
+        linearGauge.marker(0)
+                .type(MarkerType.ARROW_DOWN)
+                .color("red")
+                .offset("-3.5%")
+                .zIndex(10);
+        linearGauge.scale()
+                .minimum(0)
+                .maximum(200);
+        linearGauge.axis(0)
+                .minorTicks(false)
+                .width("1%");
+        linearGauge.axis(0)
+                .offset("-1.5%")
+                .orientation(Orientation.TOP)
+                .labels("top");
+
+        linearGauge.padding(0, 30, 0, 30);
+
+
+        linearGauge.data(dataSet);
+
+        anyChartView.setChart(linearGauge);
+
+
     }
+
 
     private void setupTapOnScreendForStartAndEnd() {
         // When you build a Renderable, Sceneform loads its resources in the background while returning
@@ -215,6 +280,12 @@ public class ARscanner extends AppCompatActivity {
             double measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose()));
             String text = "Measurement here = " + measurementHere + "\n";
             myTextView.setText(text);
+
+            anyChartView.setVisibility(View.VISIBLE);
+            dataSet = new SingleValueDataSet(new Double[]{measurementHere});
+            this.linearGauge.data(dataSet);
+
+
         }
 
         try {
@@ -317,9 +388,13 @@ public class ARscanner extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("world", world);
-        this.startActivity(intent);
+        new AlertDialog.Builder(this)
+                .setTitle("Exit scanner?")
+                .setMessage("Are you sure you want to leave the scanner, start and end points will be lost?")
+                .setPositiveButton("Yes", (dialogInterface, i) -> saveAndGoToMain())
+                .setNegativeButton("Cancel", null)
+                .create().show();
+
     }
 
     @Override
@@ -330,6 +405,12 @@ public class ARscanner extends AppCompatActivity {
                 fitToScanView.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private void saveAndGoToMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("world", world);
+        this.startActivity(intent);
     }
 
     public void backToMain(View view) {

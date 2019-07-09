@@ -13,13 +13,13 @@
         android:required="true" />
 
     <application
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".setUpWorld"></activity>
+        <activity android:name=".setUpWorld" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
