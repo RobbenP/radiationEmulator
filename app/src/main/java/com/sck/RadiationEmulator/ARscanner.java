@@ -34,7 +34,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -74,7 +74,7 @@ public class ARscanner extends AppCompatActivity {
     private Node end = null;
     private TextView myTextView;
     private ImageView fitToScanView;
-    private HorizontalBarChart horizontalBarChart;
+    private BarChart horizontalBarChart;
 
 
     /**
