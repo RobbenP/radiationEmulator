@@ -284,6 +284,7 @@ public class ARscanner extends AppCompatActivity {
             anyChartView.setVisibility(View.VISIBLE);
             dataSet = new SingleValueDataSet(new Double[]{measurementHere});
             this.linearGauge.data(dataSet);
+            anyChartView.invalidate();
 
 
         }
