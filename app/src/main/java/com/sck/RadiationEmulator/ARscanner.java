@@ -33,6 +33,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
@@ -47,10 +51,11 @@ import com.sck.RadiationEmulator.Model.AugmentedImageNode;
 import com.sck.RadiationEmulator.Model.World;
 import com.sck.common.helpers.SnackbarHelper;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 
 public class ARscanner extends AppCompatActivity {
     // if set to true it will use image recognition to set start and end point
@@ -69,6 +74,8 @@ public class ARscanner extends AppCompatActivity {
     private Node end = null;
     private TextView myTextView;
     private ImageView fitToScanView;
+    private HorizontalBarChart horizontalBarChart;
+
 
     /**
      * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
@@ -119,6 +126,18 @@ public class ARscanner extends AppCompatActivity {
         //myTextView.setVisibility(View.INVISIBLE);
         fitToScanView = findViewById(R.id.image_view_fit_to_scan);
         fitToScanView.setVisibility(View.INVISIBLE);
+
+
+        horizontalBarChart = findViewById(R.id.chart);
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0f, 30f));
+        BarDataSet set = new BarDataSet(entries, "BarDataSet");
+        BarData data = new BarData(set);
+        data.setBarWidth(0.9f);
+        horizontalBarChart.setData(data);
+        horizontalBarChart.setFitBars(true);
+        horizontalBarChart.invalidate();
+
 
         if (!USE_AUGMENTED_IMAGES) setupTapOnScreendForStartAndEnd();
 
