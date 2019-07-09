@@ -17,6 +17,7 @@ package com.sck.RadiationEmulator;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -42,6 +43,7 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.Material;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.sck.RadiationEmulator.Model.AugmentedImageNode;
 import com.sck.RadiationEmulator.Model.World;
 import com.sck.common.helpers.SnackbarHelper;
 
@@ -128,8 +130,6 @@ public class ARscanner extends AppCompatActivity {
         });
     }
 
-    private void setupImageRecognitionForStartAndEnd() {
-    }
 
     private void setupTapOnScreendForStartAndEnd() {
         // When you build a Renderable, Sceneform loads its resources in the background while returning
@@ -317,9 +317,13 @@ public class ARscanner extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("world", world);
-        this.startActivity(intent);
+        new AlertDialog.Builder(this)
+                .setTitle("Exit scanner?")
+                .setMessage("Are you sure you want to leave the scanner, start and end points will be lost?")
+                .setPositiveButton("Yes", (dialogInterface, i) -> saveAndGoToMain())
+                .setNegativeButton("Cancel", null)
+                .create().show();
+
     }
 
     @Override
@@ -330,6 +334,12 @@ public class ARscanner extends AppCompatActivity {
                 fitToScanView.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private void saveAndGoToMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("world", world);
+        this.startActivity(intent);
     }
 
     public void backToMain(View view) {

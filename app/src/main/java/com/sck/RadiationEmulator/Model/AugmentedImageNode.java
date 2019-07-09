@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sck.RadiationEmulator;
+package com.sck.RadiationEmulator.Model;
 
 import android.content.Context;
 import android.util.Log;
@@ -24,6 +24,7 @@ import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.sck.RadiationEmulator.R;
 
 import java.util.concurrent.CompletableFuture;
 
