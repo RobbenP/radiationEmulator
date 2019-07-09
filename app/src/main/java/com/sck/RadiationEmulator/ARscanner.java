@@ -24,6 +24,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,7 +50,6 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.sck.RadiationEmulator.Model.AugmentedImageNode;
 import com.sck.RadiationEmulator.Model.World;
-import com.sck.common.helpers.SnackbarHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,7 +60,7 @@ import java.util.Map;
 public class ARscanner extends AppCompatActivity {
     // if set to true it will use image recognition to set start and end point
     // if set to false it will use a tap on the screen
-    public static final boolean USE_AUGMENTED_IMAGES = false;
+    public static final boolean USE_AUGMENTED_IMAGES = true;
     private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
     //if set to true it wil use distancing in our virtual world, if set tot true it will use real world distancing
@@ -126,17 +126,8 @@ public class ARscanner extends AppCompatActivity {
         //myTextView.setVisibility(View.INVISIBLE);
         fitToScanView = findViewById(R.id.image_view_fit_to_scan);
         fitToScanView.setVisibility(View.INVISIBLE);
-
-
         horizontalBarChart = findViewById(R.id.chart);
-        List<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0f, 30f));
-        BarDataSet set = new BarDataSet(entries, "BarDataSet");
-        BarData data = new BarData(set);
-        data.setBarWidth(0.9f);
-        horizontalBarChart.setData(data);
-        horizontalBarChart.setFitBars(true);
-        horizontalBarChart.invalidate();
+        horizontalBarChart.setVisibility(View.INVISIBLE);
 
 
         if (!USE_AUGMENTED_IMAGES) setupTapOnScreendForStartAndEnd();
@@ -147,6 +138,39 @@ public class ARscanner extends AppCompatActivity {
             arFragment.onUpdate(frameTime);
             cameraMoved();
         });
+    }
+
+    private void setupBarChart(double measurement) {
+        horizontalBarChart.setVisibility(View.VISIBLE);
+        List<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(0f, (float) measurement));
+        BarDataSet set = new BarDataSet(entries, "BarDataSet");
+        if (measurement < 50)
+            set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), R.color.green));
+        else if (measurement < 100)
+            set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), R.color.yellow));
+        else if (measurement < 150)
+            set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), R.color.orange));
+        else set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), R.color.red));
+
+        BarData data = new BarData(set);
+        data.setBarWidth(2f);
+
+        horizontalBarChart.setData(data);
+        horizontalBarChart.setFitBars(true);
+        //horizontalBarChart.setVisibleYRange(0, 200, YAxis.AxisDependency.LEFT);
+        //horizontalBarChart.setVisibleYRangeMinimum(200, YAxis.AxisDependency.LEFT);
+        //horizontalBarChart.setVisibleYRangeMinimum(0, YAxis.AxisDependency.LEFT);
+        horizontalBarChart.getAxisLeft().setAxisMaximum(200);
+        horizontalBarChart.getAxisLeft().setAxisMinimum(0);
+        horizontalBarChart.getAxisRight().setDrawLabels(false);
+        horizontalBarChart.getAxisRight().setEnabled(false);
+        horizontalBarChart.setTouchEnabled(false);
+        horizontalBarChart.getXAxis().setDrawLabels(false);
+        horizontalBarChart.getDescription().setEnabled(false);
+        // Hide graph legend
+        horizontalBarChart.getLegend().setEnabled(false);
+        horizontalBarChart.invalidate();
     }
 
 
@@ -234,6 +258,7 @@ public class ARscanner extends AppCompatActivity {
             double measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose()));
             String text = "Measurement here = " + measurementHere + "\n";
             myTextView.setText(text);
+            setupBarChart(measurementHere);
         }
 
         try {
@@ -301,9 +326,9 @@ public class ARscanner extends AppCompatActivity {
                 case PAUSED:
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,
                     // but not yet tracked.
-                    String text = "Detected Image " + augmentedImage.getIndex() + " but image is in paused state";
-                    SnackbarHelper.getInstance().showMessage(this, text);
-                    Log.d("paused", "recognizeImage: " + augmentedImage.getCenterPose().toString());
+                    //String text = "Detected Image " + augmentedImage.getIndex() + " but image is in paused state";
+                    //SnackbarHelper.getInstance().showMessage(this, text);
+                    //Log.d("paused", "recognizeImage: " + augmentedImage.getCenterPose().toString());
                     break;
 
                 case TRACKING:
@@ -319,8 +344,8 @@ public class ARscanner extends AppCompatActivity {
                         augmentedImageMap.put(augmentedImage, node);
                         arFragment.getArSceneView().getScene().addChild(node);
                         String name = augmentedImage.getName();
-                        if (augmentedImage.getName().equals("start")) start = node;
-                        else if (augmentedImage.getName().equals("stop")) end = node;
+                        if (name.equals("start")) start = node;
+                        else if (name.equals("stop")) end = node;
                     }
                     break;
 
