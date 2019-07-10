@@ -17,14 +17,16 @@
 package com.sck.RadiationEmulator.Model;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.math.Quaternion;
+import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.sck.RadiationEmulator.R;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -51,8 +53,10 @@ public class AugmentedImageNode extends AnchorNode {
         if (startAndStop == null) {
             startAndStop =
                     ModelRenderable.builder()
-                            .setSource(context, R.raw.andy)
+                            //.setSource(context, R.raw.andy)
+                            .setSource(context, Uri.parse("21386_Exclamation_Point_v1.sfb"))
                             .build();
+
 
         }
     }
@@ -89,6 +93,8 @@ public class AugmentedImageNode extends AnchorNode {
         anchorNode.setParent(this);
 
         Node andy = new Node();
+        andy.setLocalRotation(Quaternion.axisAngle(new Vector3(1f, 0, 0), -90f));
+
         andy.setParent(anchorNode);
         andy.setRenderable(startAndStop.getNow(null));
 

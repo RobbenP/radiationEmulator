@@ -1,16 +1,16 @@
 {
   materials: [
     {
-      name: 'color_15277357',
+      name: '21386_Exclamation_Point_v1',
       parameters: [
         {
           baseColor: null,
         },
         {
           baseColorTint: [
-            0.91372500000000001,
-            0.11372500000000001,
-            0.17647099999999999,
+            0.59999999999999998,
+            0.59999999999999998,
+            0.59999999999999998,
             1,
           ],
         },
@@ -30,13 +30,14 @@
   model: {
     attributes: [
       'Position',
+      'TexCoord',
       'Orientation',
     ],
     collision: {},
-    file: 'sampledata/models/exclamation.obj',
-    name: 'exclamation',
+    file: 'sampledata/models/21386_Exclamation_Point_v1.obj',
+    name: '21386_Exclamation_Point_v1',
     recenter: 'root',
-    scale: 0.193573,
+    scale: 0.01,
   },
   version: '0.54:2',
 }

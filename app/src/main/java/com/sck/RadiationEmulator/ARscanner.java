@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -46,6 +47,8 @@ import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.math.Quaternion;
+import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.Material;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
@@ -180,8 +183,8 @@ public class ARscanner extends AppCompatActivity {
         // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
         //todo find a better 3D model, instead of the android icon
         ModelRenderable.builder()
-                .setSource(this, R.raw.andy)
-                //.setSource(this, Uri.parse("exclamation.sfb"))
+                //.setSource(this, R.raw.andy)
+                .setSource(this, Uri.parse("21386_Exclamation_Point_v1.sfb"))
                 .build()
                 .thenAccept(renderable -> andyRenderable = renderable)
                 .exceptionally(
@@ -232,6 +235,7 @@ public class ARscanner extends AppCompatActivity {
 
         // Create the transformable andy and add it to the anchor.
         Node andy = new Node();
+        andy.setLocalRotation(Quaternion.axisAngle(new Vector3(1f, 0, 0), -90f));
         andy.setParent(anchorNode);
         andy.setRenderable(render);
         //if (myNodes.isEmpty()) myTextView.setVisibility(View.VISIBLE);
