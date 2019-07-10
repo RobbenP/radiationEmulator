@@ -1,5 +1,6 @@
 package com.sck.RadiationEmulator;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -117,14 +118,27 @@ public class setUpWorld extends AppCompatActivity {
     }
 
     public void goToARscanner(View v) {
-        Intent intent = new Intent(this, ARscanner.class);
+        if (!xComponent.getText().toString().equals("") || !yComponent.getText().toString().equals("") || !measureComponent.getText().toString().equals("")) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit setup?")
+                    .setMessage("Some fields are not saved, are you sure you want to leave this page?")
+                    .setPositiveButton("Yes", (dialogInterface, i) -> {
+                        Intent intent = new Intent(this, ARscanner.class);
 
-        intent.putExtra("world", world);
-        this.startActivity(intent);
+                        intent.putExtra("world", world);
+                        this.startActivity(intent);
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create().show();
+        }
+
 
     }
 
     public void clearWorld(View v) {
+        xComponent.setText("");
+        yComponent.setText("");
+        measureComponent.setText("");
         world.clearMeasurements();
         updateMeasureList();
     }

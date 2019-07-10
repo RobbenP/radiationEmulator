@@ -190,7 +190,7 @@ public class ARscanner extends AppCompatActivity {
     private void setupTapOnScreendForStartAndEnd() {
         // When you build a Renderable, Sceneform loads its resources in the background while returning
         // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
-        //todo find a better 3D model, instead of the android icon
+
         ModelRenderable.builder()
                 //.setSource(this, R.raw.andy)
                 .setSource(this, Uri.parse("21386_Exclamation_Point_v1.sfb"))
