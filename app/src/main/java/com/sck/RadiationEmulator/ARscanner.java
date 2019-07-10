@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ARscanner extends AppCompatActivity {
@@ -70,6 +71,7 @@ public class ARscanner extends AppCompatActivity {
     //if set to true it wil use distancing in our virtual world, if set tot true it will use real world distancing
     private static final boolean USE_RELATIVE_DISTANCES = true;
     private final Map<AugmentedImage, AugmentedImageNode> augmentedImageMap = new HashMap<>();
+    private final int BARCHART_MAXIMUM = 200;
     private World world;
     private ArFragment arFragment;
     private ModelRenderable andyRenderable;
@@ -80,7 +82,6 @@ public class ARscanner extends AppCompatActivity {
     private ImageView fitToScanView;
     private BarChart horizontalBarChart;
     private TextView measurement;
-
 
     /**
      * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
@@ -124,11 +125,10 @@ public class ARscanner extends AppCompatActivity {
         //if a world already exists fetch it, if not build a new world
         world = getIntent().getParcelableExtra("world");
         if (world == null) world = World.getInstance();
-
+        //initialize all the view elements
         setContentView(R.layout.activity_ux);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         myTextView = findViewById(R.id.textView);
-        //myTextView.setVisibility(View.INVISIBLE);
         fitToScanView = findViewById(R.id.image_view_fit_to_scan);
         fitToScanView.setVisibility(View.INVISIBLE);
         horizontalBarChart = findViewById(R.id.chart);
@@ -136,7 +136,8 @@ public class ARscanner extends AppCompatActivity {
         measurement = findViewById(R.id.txtMeasurement);
         measurement.setVisibility(View.INVISIBLE);
 
-
+        // Is USE_AUGMENTED_IMAGES is set to true no need to initialize the an tap
+        // listener
         if (!USE_AUGMENTED_IMAGES) setupTapOnScreendForStartAndEnd();
 
 
@@ -147,7 +148,11 @@ public class ARscanner extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Sets up the barchart that displays the measurement on screen
+     *
+     * @param measurement the measurement we wish to display on the barchart
+     */
     private void setupBarChart(double measurement) {
         horizontalBarChart.setVisibility(View.VISIBLE);
         List<BarEntry> entries = new ArrayList<>();
@@ -161,10 +166,7 @@ public class ARscanner extends AppCompatActivity {
 
         horizontalBarChart.setData(data);
         horizontalBarChart.setFitBars(true);
-        //horizontalBarChart.setVisibleYRange(0, 200, YAxis.AxisDependency.LEFT);
-        //horizontalBarChart.setVisibleYRangeMinimum(200, YAxis.AxisDependency.LEFT);
-        //horizontalBarChart.setVisibleYRangeMinimum(0, YAxis.AxisDependency.LEFT);
-        horizontalBarChart.getAxisLeft().setAxisMaximum(200);
+        horizontalBarChart.getAxisLeft().setAxisMaximum(BARCHART_MAXIMUM);
         horizontalBarChart.getAxisLeft().setAxisMinimum(0);
         horizontalBarChart.getAxisRight().setDrawLabels(false);
         horizontalBarChart.getAxisRight().setEnabled(false);
@@ -176,6 +178,12 @@ public class ARscanner extends AppCompatActivity {
         horizontalBarChart.invalidate();
     }
 
+    /**
+     * Returns the right color depending on how dangerous the measurement is
+     *
+     * @param measurement the measurement of which we need to know to color
+     * @return a color defined in xml/values/color.xml
+     */
     private int getColorBasedOnMeasurement(double measurement) {
         if (measurement < 50)
             return R.color.green;
@@ -187,6 +195,9 @@ public class ARscanner extends AppCompatActivity {
 
     }
 
+    /**
+     * Sets up the on tap listener to place the start and end with taps on the screen
+     */
     private void setupTapOnScreendForStartAndEnd() {
         // When you build a Renderable, Sceneform loads its resources in the background while returning
         // a CompletableFuture. Call thenAccept(), handle(), or check isDone() before calling get().
@@ -225,6 +236,11 @@ public class ARscanner extends AppCompatActivity {
                         red.setFloat3("baseColor", 255, 0, 0);
                         redAndy.setMaterial(red);
                         end = addToScene(hitResult, redAndy);
+                    } else {
+                        // Turn off the plane discovery since we've found our start and end
+                        arFragment.getPlaneDiscoveryController().hide();
+                        arFragment.getPlaneDiscoveryController().setInstructionView(null);
+                        arFragment.getArSceneView().getPlaneRenderer().setEnabled(false);
                     }
 
 
@@ -255,59 +271,49 @@ public class ARscanner extends AppCompatActivity {
     }
 
     /**
-     * Executes on every update
+     * Executes on every update. Updates all the text in the view and starts the image recognition
      */
     private void cameraMoved() {
 
         if (USE_AUGMENTED_IMAGES) recognizeImage();
 
-        Log.d("Mijn debug", "cameraMoved: " + arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().toString());
-        Log.d("Mijn debug", "amount of nodes: " + arFragment.getArSceneView().getScene().getChildren().size());
-//        int i = 0;
-//        for (Node node : arFragment.getArSceneView().getScene().getChildren()){
-//
+//        Log.d("Mijn debug", "cameraMoved: " + arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().toString());
+//        Log.d("Mijn debug", "amount of nodes: " + arFragment.getArSceneView().getScene().getChildren().size());
+//        try {
+//            Log.d("Mijn debug", "Node start with position " + start.getWorldPosition().toString());
+//            Log.d("Mijn debug", "Node end with position " + end.getWorldPosition().toString());
+//        } catch (NullPointerException e) {
+//            Log.d("Mijn debug", "waiting for start and end points");
+//        }
         myTextView.setText("");
 
         if (start != null && end != null) {
+            // does the measurement and displays it
             double measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose()));
             String text = "Measurement here = " + measurementHere + "\n";
             myTextView.setText(text);
             setupBarChart(measurementHere);
             measurement.setVisibility(View.VISIBLE);
-            measurement.setText(String.format("%.2f", measurementHere));
+            measurement.setText(String.format(Locale.ENGLISH, "%.2f", measurementHere));
             measurement.setTextColor(ContextCompat.getColor(measurement.getContext(), getColorBasedOnMeasurement(measurementHere)));
 
-        }
 
-        try {
-            Log.d("Mijn debug", "Node start with position " + start.getWorldPosition().toString());
-            Log.d("Mijn debug", "Node end with position " + end.getWorldPosition().toString());
-        } catch (NullPointerException e) {
-            Log.d("Mijn debug", "waiting for start and end points");
-        }
-//            i++;
-//        }
-        if (start != null && end != null) {
-            String text = "";
+            text = "";
             double[] myCoords;
             double[] nodeCoords = new double[2];
             if (USE_RELATIVE_DISTANCES) {
                 myCoords = World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose());
+                nodeCoords = World.myRelativeCoords(start, end, start);
 
             } else {
                 myCoords[0] = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx();
                 myCoords[1] = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz();
-
-            }
-
-            if (USE_RELATIVE_DISTANCES) {
-                nodeCoords = World.myRelativeCoords(start, end, start);
-
-            } else {
                 nodeCoords[0] = start.getWorldPosition().x;
                 nodeCoords[1] = start.getWorldPosition().z;
             }
-            text += "2D distance to start is " + String.format("%.2f", World.calculateDistance(myCoords[0], myCoords[1], nodeCoords[0], nodeCoords[1])) + "\n";
+
+
+            text += "2D distance to start is " + String.format(Locale.ENGLISH, "%.2f", World.calculateDistance(myCoords[0], myCoords[1], nodeCoords[0], nodeCoords[1])) + "\n";
             //text += " 3D distance is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty(), node.getWorldPosition().x, node.getWorldPosition().z, node.getWorldPosition().y)) + "\n";
             if (USE_RELATIVE_DISTANCES) {
                 nodeCoords = World.myRelativeCoords(start, end, end);
@@ -316,11 +322,11 @@ public class ARscanner extends AppCompatActivity {
                 nodeCoords[0] = end.getWorldPosition().x;
                 nodeCoords[1] = end.getWorldPosition().z;
             }
-            text += "2D distance to end is " + String.format("%.2f", World.calculateDistance(myCoords[0], myCoords[1], nodeCoords[0], nodeCoords[1])) + "\n";
+            text += "2D distance to end is " + String.format(Locale.ENGLISH, "%.2f", World.calculateDistance(myCoords[0], myCoords[1], nodeCoords[0], nodeCoords[1])) + "\n";
             //text += " 3D distance is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty(), node.getWorldPosition().x, node.getWorldPosition().z, node.getWorldPosition().y)) + "\n";
 
 
-            text += "My relative coordinates are " + String.format("%.2f", myCoords[0]) + "," + String.format("%.2f", myCoords[1]) + "\n";
+            text += "My relative coordinates are " + String.format(Locale.ENGLISH, "%.2f", myCoords[0]) + "," + String.format("%.2f", myCoords[1]) + "\n";
             //tex += "Distance between nodes is " + Math.pow(start.getWorldPosition().x - end.getWorldPosition().z,2 ) ;
 
 
@@ -329,6 +335,10 @@ public class ARscanner extends AppCompatActivity {
 
     }
 
+    /**
+     * Tries to recognize an image loaded in the imagedatabase if found keeps track of it
+     * and puts a 3d object on it
+     */
     private void recognizeImage() {
         Frame frame = arFragment.getArSceneView().getArFrame();
 
@@ -382,12 +392,19 @@ public class ARscanner extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Exit scanner?")
                 .setMessage("Are you sure you want to leave the scanner, start and end points will be lost?")
-                .setPositiveButton("Yes", (dialogInterface, i) -> saveAndGoToMain())
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("world", world);
+                    this.startActivity(intent);
+                })
                 .setNegativeButton("Cancel", null)
                 .create().show();
 
     }
 
+    /**
+     * If we lose our images after returning show the fitToScanView again
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -396,12 +413,6 @@ public class ARscanner extends AppCompatActivity {
                 fitToScanView.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    private void saveAndGoToMain() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("world", world);
-        this.startActivity(intent);
     }
 
     public void backToMain(View view) {

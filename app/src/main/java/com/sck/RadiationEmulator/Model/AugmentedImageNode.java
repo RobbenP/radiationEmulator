@@ -31,33 +31,26 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Node for rendering an augmented image. The image is framed by placing the virtual picture frame
- * at the corners of the augmented image trackable.
+ * Node for rendering an augmented image. The image is framed by placing the virtual image
+ * on the augmented image trackable.
  */
-@SuppressWarnings({"AndroidApiChecker"})
 public class AugmentedImageNode extends AnchorNode {
 
     private static final String TAG = "AugmentedImageNode";
-    // Models of the 4 corners.  We use completable futures here to simplify
-    // the error handling and asynchronous loading.  The loading is started with the
-    // first construction of an instance, and then used when the image is set.
+
     private static CompletableFuture<ModelRenderable> startAndStop;
-    private static CompletableFuture<ModelRenderable> urCorner;
-    private static CompletableFuture<ModelRenderable> lrCorner;
-    private static CompletableFuture<ModelRenderable> llCorner;
+
     // The augmented image represented by this node.
     private AugmentedImage image;
 
     public AugmentedImageNode(Context context) {
-        // Upon construction, start loading the models for the corners of the frame.
+        // Upon construction, start loading the model
         if (startAndStop == null) {
             startAndStop =
                     ModelRenderable.builder()
                             //.setSource(context, R.raw.andy)
                             .setSource(context, Uri.parse("21386_Exclamation_Point_v1.sfb"))
                             .build();
-
-
         }
     }
 
@@ -93,6 +86,7 @@ public class AugmentedImageNode extends AnchorNode {
         anchorNode.setParent(this);
 
         Node andy = new Node();
+        //Turns the 3D image 90degrees
         andy.setLocalRotation(Quaternion.axisAngle(new Vector3(1f, 0, 0), -90f));
 
         andy.setParent(anchorNode);

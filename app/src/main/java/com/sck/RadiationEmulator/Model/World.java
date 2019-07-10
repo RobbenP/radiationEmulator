@@ -10,10 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class that keeps track of the world: stores a list of all the emulatedMeasurements and the world size
- * It also provides some methods to do calculations in the world
+ * A singleton class that keeps track of the world. It stores a list of all the emulatedMeasurements and the world size
+ * It also provides some methods to do calculations in this world
+ *
+ * @see EmulatedMeasurement
  */
-//done instead of serializable let it implement parcelable, better for android performance
 public class World implements Parcelable {
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<World> CREATOR = new Parcelable.Creator<World>() {
@@ -29,6 +30,9 @@ public class World implements Parcelable {
     };
     private static final int WORLD_SIZE = 100;
     private static World world_instance = new World();
+    /**
+     * A list of all the EmulatedMeasurements in this world
+     */
     private List<EmulatedMeasurement> measurementsList = new ArrayList<>();
 
 //    private World(Parcel in) {
@@ -65,20 +69,43 @@ public class World implements Parcelable {
      * in a 2 dimensional list
      */
     public static double[] myRelativeCoords(Node start, Node end, Pose camera) {
-        double[] result = new double[2];
-        if (end == null) {
-            throw new IllegalArgumentException("Start and end have to be set first!");
-        }
-
-        double xMultiplier = WORLD_SIZE / (end.getWorldPosition().x - start.getWorldPosition().x);
-        double zMultiplier = WORLD_SIZE / (end.getWorldPosition().z - start.getWorldPosition().z);
-        result[0] = (camera.tx() - start.getWorldPosition().x) * xMultiplier;
-        result[1] = (camera.tz() - start.getWorldPosition().z) * zMultiplier;
-
-        return result;
+        return myRelativeCoords(start, end, camera.tx(), camera.tz());
     }
 
+
+    /**
+     * Calculates the coordinates from the real world camera coordinates to
+     * the coordinates in this world, based on 2 real world nodes start and end.
+     *
+     * @param start  start is a node in the real world that will be used as the
+     *               origin for this world
+     * @param end    end is a node in the real world that will be used as the
+     *               point (WORLD_SIZE,WORLD_SIZE) in this world
+     * @param camera camera is the node of the camera or any other position in the real world, these
+     *               coordinates will be converted to the coordinates in this world
+     * @return returns the coordinates in this world of the camera
+     * in a 2 dimensional list
+     */
     public static double[] myRelativeCoords(Node start, Node end, Node camera) {
+        return myRelativeCoords(start, end, camera.getWorldPosition().x, camera.getWorldPosition().z);
+    }
+
+    /**
+     * Calculates the coordinates from the real world camera coordinates to
+     * the coordinates in this world, based on 2 real world nodes start and end.
+     *
+     * @param start start is a node in the real world that will be used as the
+     *              origin for this world
+     * @param end   end is a node in the real world that will be used as the
+     *              point (WORLD_SIZE,WORLD_SIZE) in this world
+     * @param x     the x coordinate of the real world position, that is used to calculate
+     *              the relative coordinates
+     * @param y     the coordinate of the real world position, that is used to calculate
+     *              the relative coordinates
+     * @return returns the coordinates in this world of the camera
+     * in a 2 dimensional list
+     */
+    public static double[] myRelativeCoords(Node start, Node end, double x, double y) {
         double[] result = new double[2];
         if (end == null) {
             throw new IllegalArgumentException("Start and end have to be set first!");
@@ -86,12 +113,21 @@ public class World implements Parcelable {
 
         double xMultiplier = WORLD_SIZE / (end.getWorldPosition().x - start.getWorldPosition().x);
         double zMultiplier = WORLD_SIZE / (end.getWorldPosition().z - start.getWorldPosition().z);
-        result[0] = (camera.getWorldPosition().x - start.getWorldPosition().x) * xMultiplier;
-        result[1] = (camera.getWorldPosition().z - start.getWorldPosition().z) * zMultiplier;
+        result[0] = (x - start.getWorldPosition().x) * xMultiplier;
+        result[1] = (y - start.getWorldPosition().z) * zMultiplier;
 
         return result;
     }
 
+    /**
+     * Calculates the distance between point A(x1,y1) and point B(x2,y2)
+     *
+     * @param x1 X coordinate of the first point
+     * @param y1 Y coordinate of the first point
+     * @param x2 X coordinate of the second point
+     * @param y2 Y coordinate of the second point
+     * @return The distance between point A(x1,y1) and point B(x2,y2) as a double
+     */
     public static double calculateDistance(double x1, double y1, double x2, double y2) {
         double dx = x1 - x2;
         double dy = y1 - y2;
@@ -100,6 +136,17 @@ public class World implements Parcelable {
         return Math.sqrt(dx + dy);
     }
 
+    /**
+     * Calculates the distance between point A(x1,y1,z1) and point B(x2,y2,z2)
+     *
+     * @param x1 X coordinate of the first point
+     * @param y1 Y coordinate of the first point
+     * @param z1 Z coordinate of the first point
+     * @param x2 X coordinate of the second point
+     * @param y2 Y coordinate of the second point
+     * @param z2 Z coordinate of the second point
+     * @return The distance between point A(x1,y1) and point B(x2,y2) as a double
+     */
     public static double calculateDistance(double x1, double y1, double z1, double x2, double y2, double z2) {
         double dx = x1 - x2;
         double dy = y1 - y2;
@@ -117,7 +164,7 @@ public class World implements Parcelable {
     public List<EmulatedMeasurement> getMeasurementsList() {
         return measurementsList;
     }
-//TODO now it just uses the distance to EmulatedMeasurements to calculate the measurement, this probably has to be changed to a more scientific calculation
+
 
     /**
      * Adds a EmulatedMeasurement to the list of EmulatedMeasurements of this world, if it
@@ -136,10 +183,18 @@ public class World implements Parcelable {
 
     }
 
+    /**
+     * Empties the measurementsList
+     */
     public void clearMeasurements() {
         measurementsList.clear();
     }
 
+    /**
+     * Deletes an EmulatedMeasurement from the list of measurements
+     *
+     * @param measurement the EmulatedMeasurement to delete
+     */
     public void deleteMeasurement(EmulatedMeasurement measurement) {
         measurementsList.remove(measurement);
     }
@@ -149,8 +204,9 @@ public class World implements Parcelable {
      * the EmulatedMeasurements. Does not use realworld distance but distance in this world
      *
      * @param myRelativeLocation The location where there has to be a measurement
-     * @return The measurement on myRelativeLocation
+     * @return The measurement on myRelativeLocation as a double
      */
+    //TODO now it just uses the distance to EmulatedMeasurements to calculate the measurement, this probably has to be changed to a more scientific calculation
     public double GetMeasurementHere(double[] myRelativeLocation) {
         if (measurementsList.isEmpty()) {
             return 0;

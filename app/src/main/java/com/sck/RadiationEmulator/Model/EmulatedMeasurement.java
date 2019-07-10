@@ -4,9 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * A claas to store a measurement to 2d coordinates, for the possibility to add more information
+ * An EmulatedMeasurement are 2D coordinates (X and Y) and a measurement.
  */
-//Done instead of serializable let it implement parcelable, better for android performance
 public class EmulatedMeasurement implements Parcelable {
     public static final Creator<EmulatedMeasurement> CREATOR = new Creator<EmulatedMeasurement>() {
         @Override

@@ -37,7 +37,7 @@
     file: 'sampledata/models/21386_Exclamation_Point_v1.obj',
     name: '21386_Exclamation_Point_v1',
     recenter: 'root',
-    scale: 0.01,
+    scale: 0.1,
   },
   version: '0.54:2',
 }

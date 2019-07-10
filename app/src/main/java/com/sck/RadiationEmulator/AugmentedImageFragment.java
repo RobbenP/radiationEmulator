@@ -49,7 +49,7 @@ public class AugmentedImageFragment extends ArFragment {
     // matching.
     private static final String DEFAULT_IMAGE_NAME = "default.jpg";
 
-    // This is a pre-created database containing the sample image.
+    // This is a pre-created database containing the start and stop images.
     private static final String SAMPLE_IMAGE_DATABASE = "myimages.imgdb";
 
     // Augmented image configuration and rendering.

@@ -11,10 +11,11 @@ import com.sck.RadiationEmulator.Model.World;
 
 public class MainActivity extends AppCompatActivity {
 
-    World world;
+    private World world;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //if a world already exists fetch it
         world = getIntent().getParcelableExtra("world");
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -35,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(intent);
     }
 
+    /**
+     * Closes the application when we press on back here
+     */
     @Override
     public void onBackPressed() {
         finishAndRemoveTask();

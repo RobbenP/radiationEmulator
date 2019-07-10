@@ -38,16 +38,15 @@ public class setUpWorld extends AppCompatActivity {
         measureComponent = findViewById(R.id.editMeasure);
         listAllMeasurements = findViewById(R.id.scrollListAll);
         listAllMeasurements.setVisibility(View.VISIBLE);
-        if (getIntent().getParcelableExtra("world") == null)
-            world = World.getInstance();
-        else {
-            world = getIntent().getParcelableExtra("world");
-            updateMeasureList();
-        }
-        checkWhetherToShowExplanation();
+        world = getIntent().getParcelableExtra("world") == null ? World.getInstance() : getIntent().getParcelableExtra("world");
+        updateMeasureList();
 
     }
 
+    /**
+     * If there are no measurements we display some text to explain how it works, if there are
+     * measurements it hides it.
+     */
     private void checkWhetherToShowExplanation() {
         TextView explanation = findViewById(R.id.explanation);
         if (world.getMeasurementsList().isEmpty()) {
@@ -98,13 +97,7 @@ public class setUpWorld extends AppCompatActivity {
     /**
      * Displays all of the measurements in a TextView
      */
-    //done change this to a listview so when pressed they can be removed
     private void updateMeasureList() {
-//        String measureList = "";
-//        for (EmulatedMeasurement em : world.getMeasurementsList()) {
-//            measureList += em.toString() + "\n";
-//        }
-        //listAllMeasurements.setText(measureList);
         myAdapter = new EmulatedMeasurementAdapter(world.getMeasurementsList(), getApplicationContext());
         listAllMeasurements.setAdapter(myAdapter);
         listAllMeasurements.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -117,6 +110,9 @@ public class setUpWorld extends AppCompatActivity {
 
     }
 
+    /**
+     * Goes to the scanner but displays a warning if the fields aren't empty
+     */
     public void goToARscanner(View v) {
         if (!xComponent.getText().toString().equals("") || !yComponent.getText().toString().equals("") || !measureComponent.getText().toString().equals("")) {
             new AlertDialog.Builder(this)
@@ -140,6 +136,9 @@ public class setUpWorld extends AppCompatActivity {
 
     }
 
+    /**
+     * Empties the list of measurements and also empties the fields
+     */
     public void clearWorld(View v) {
         xComponent.setText("");
         yComponent.setText("");
@@ -148,6 +147,9 @@ public class setUpWorld extends AppCompatActivity {
         updateMeasureList();
     }
 
+    /**
+     * Pressing back goes to the MainActivity
+     */
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
