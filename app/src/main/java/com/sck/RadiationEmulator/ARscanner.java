@@ -79,6 +79,7 @@ public class ARscanner extends AppCompatActivity {
     private TextView myTextView;
     private ImageView fitToScanView;
     private BarChart horizontalBarChart;
+    private TextView measurement;
 
 
     /**
@@ -132,6 +133,8 @@ public class ARscanner extends AppCompatActivity {
         fitToScanView.setVisibility(View.INVISIBLE);
         horizontalBarChart = findViewById(R.id.chart);
         horizontalBarChart.setVisibility(View.INVISIBLE);
+        measurement = findViewById(R.id.txtMeasurement);
+        measurement.setVisibility(View.INVISIBLE);
 
 
         if (!USE_AUGMENTED_IMAGES) setupTapOnScreendForStartAndEnd();
@@ -144,18 +147,14 @@ public class ARscanner extends AppCompatActivity {
         });
     }
 
+
     private void setupBarChart(double measurement) {
         horizontalBarChart.setVisibility(View.VISIBLE);
         List<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(0f, (float) measurement));
         BarDataSet set = new BarDataSet(entries, "BarDataSet");
-        if (measurement < 50)
-            set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), R.color.green));
-        else if (measurement < 100)
-            set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), R.color.yellow));
-        else if (measurement < 150)
-            set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), R.color.orange));
-        else set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), R.color.red));
+        set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), getColorBasedOnMeasurement(measurement)));
+
 
         BarData data = new BarData(set);
         data.setBarWidth(2f);
@@ -177,6 +176,16 @@ public class ARscanner extends AppCompatActivity {
         horizontalBarChart.invalidate();
     }
 
+    private int getColorBasedOnMeasurement(double measurement) {
+        if (measurement < 50)
+            return R.color.green;
+        else if (measurement < 100)
+            return R.color.yellow;
+        else if (measurement < 150)
+            return R.color.orange;
+        else return R.color.red;
+
+    }
 
     private void setupTapOnScreendForStartAndEnd() {
         // When you build a Renderable, Sceneform loads its resources in the background while returning
@@ -264,6 +273,10 @@ public class ARscanner extends AppCompatActivity {
             String text = "Measurement here = " + measurementHere + "\n";
             myTextView.setText(text);
             setupBarChart(measurementHere);
+            measurement.setVisibility(View.VISIBLE);
+            measurement.setText(String.format("%.2f", measurementHere));
+            measurement.setTextColor(ContextCompat.getColor(measurement.getContext(), getColorBasedOnMeasurement(measurementHere)));
+
         }
 
         try {
