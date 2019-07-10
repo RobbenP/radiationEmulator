@@ -28,13 +28,14 @@ public class World implements Parcelable {
         }
     };
     private static final int WORLD_SIZE = 100;
+    private static World world_instance = new World();
     private List<EmulatedMeasurement> measurementsList = new ArrayList<>();
 
 //    private World(Parcel in) {
 //        measurementsList = in.readList();
 //    }
 
-    public World() {
+    private World() {
     }
 
     protected World(Parcel in) {
@@ -107,6 +108,10 @@ public class World implements Parcelable {
         dy = dy * dy;
         dz = dz * dz;
         return Math.sqrt(dx + dy + dz);
+    }
+
+    public static World getInstance() {
+        return world_instance;
     }
 
     public List<EmulatedMeasurement> getMeasurementsList() {

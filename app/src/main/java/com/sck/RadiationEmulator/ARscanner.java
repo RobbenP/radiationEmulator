@@ -123,7 +123,7 @@ public class ARscanner extends AppCompatActivity {
         }
         //if a world already exists fetch it, if not build a new world
         world = getIntent().getParcelableExtra("world");
-        if (world == null) world = new World();
+        if (world == null) world = World.getInstance();
 
         setContentView(R.layout.activity_ux);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);

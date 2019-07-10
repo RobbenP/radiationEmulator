@@ -39,7 +39,7 @@ public class setUpWorld extends AppCompatActivity {
         listAllMeasurements = findViewById(R.id.scrollListAll);
         listAllMeasurements.setVisibility(View.VISIBLE);
         if (getIntent().getParcelableExtra("world") == null)
-            world = new World();
+            world = World.getInstance();
         else {
             world = getIntent().getParcelableExtra("world");
             updateMeasureList();
@@ -130,6 +130,11 @@ public class setUpWorld extends AppCompatActivity {
                     })
                     .setNegativeButton("Cancel", null)
                     .create().show();
+        } else {
+            Intent intent = new Intent(this, ARscanner.class);
+
+            intent.putExtra("world", world);
+            this.startActivity(intent);
         }
 
 
