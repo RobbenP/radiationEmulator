@@ -67,9 +67,6 @@ sceneform.asset('sampledata/models/andy.obj',
         'src/main/res/raw/andy')
 
 
-
-
-
 sceneform.asset('sampledata/models/21386_Exclamation_Point_v1.obj',
         'default',
         'sampledata/models/21386_Exclamation_Point_v1.sfa',

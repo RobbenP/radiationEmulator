@@ -186,13 +186,13 @@ public class ARscanner extends AppCompatActivity {
      * @return a color defined in xml/values/color.xml
      */
     private int getColorBasedOnMeasurement(double measurement) {
-        if (measurement < 50)
-            return R.color.green;
-        else if (measurement < 100)
-            return R.color.yellow;
-        else if (measurement < 150)
-            return R.color.orange;
-        else return R.color.red;
+        double[] values = {50, 100, 150};
+        int[] colors = {R.color.green, R.color.yellow, R.color.orange, R.color.red};
+        for (int index = 0; index < values.length; index++) {
+            if (measurement < values[index]) return colors[index];
+        }
+        return colors[colors.length - 1];
+
 
     }
 
@@ -290,7 +290,13 @@ public class ARscanner extends AppCompatActivity {
 
         if (start != null && end != null) {
             // does the measurement and displays it
-            double measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose()));
+            double measurementHere;
+            if (USE_RELATIVE_DISTANCES)
+                measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose()));
+            else
+                measurementHere = world.GetMeasurementHere(new double[]{arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty()
+                });
+            ;
             String text = "Measurement here = " + measurementHere + "\n";
             myTextView.setText(text);
             setupBarChart(measurementHere);

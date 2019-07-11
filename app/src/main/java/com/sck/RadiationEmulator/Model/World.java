@@ -216,12 +216,13 @@ public class World implements Parcelable {
                 double temp = m.getMeasurement() - calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY());
                 result += temp < 0 ? 0 : temp;
             }
-            for (EmulatedMeasurement m : measurementsList) {
-                double a = 1;
-                double b = 1;
-                double temp = a * (1 / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()), 2)) + b;
-                result += temp < 0 ? 0 : temp;
-            }
+            //todo what are a and b
+//            for (EmulatedMeasurement m : measurementsList) {
+//                double a = 1;
+//                double b = 1;
+//                double temp = a * (1 / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()), 2)) + b;
+//                result += temp < 0 ? 0 : temp;
+//            }
             return result;
         }
 
