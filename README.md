@@ -1,71 +1,33 @@
-Radiation Emulator
+RadiationEmulator
 ========
 
-## Language: Java vs Kotlin
+RadiationEmulator is an app to support emergency responders in their training, with this app there should be no, or atleast less, need for a real radioactive source. The app uses [ARCore](https://developers.google.com/ar/) to know your location in 3d space. You can add virtual sources by entering their coordinates and their measurement, the application will then calculate the measurement at your location.
 
-For now the application is written in Java, although google sponsors Kotlin and Kotlin has some interesting features. For now I have chosen Java because I am more familiar with it and I started building on an example that was made in Java. There should be no difference in performance since both Kotlin and Java compile to Bytecode. Which means it is possible to use Kotlin when adding new classes without any problems. Possibly I will rewrite it to Kotlin because Kotlin is more concise and a bit more readable, and also because it would be a great learning experience.
+## How does it work?
+You need to set the start and end point of the area where the exercice will be done. These points can either be set by tapping on the screen where you want them, or by scanning a printout of [start](/app/src/main/assets/start.jpg) and one of [stop](/app/src/main/assets/stop.jpg).
 
-## Outlining the area
+The application will then use those coordinates to construct a virtual square of 100x100. With the start point having the coordinates (0,0) and the endpoint (100,100). Now it is able to calculate a virtual measurement, using the measurements that have been added in the setup screen.
 
-There are 3 possibilities
-1. Manually selecting 2 points on the screen
-2. Image recognition
-3. Cloud anchors
+In the setup screen you can added the measurements using the virtual coordinates (anything between (0,0) and 100,100) and a measurement. All of these will be used to calculate the measurement if the location of the camera.
 
-#### Manually selecting 2 points on the screen
-For now this is how it is done, mainly because it is the easiest way that can be tested in the android emulator.
+## Get started
+To build the project, download it and open it in Android Studio 3.0. All dependencies should automatically be fetched by Android Studio. 
 
-Cons:
-* Each device has to manually define the start and end, different devices will have different measurements
-* Inaccurate  
+Before launching the app on your phone you have to install [ARCore](https://play.google.com/store/apps/details?id=com.google.ar.core&hl=en) on it. 
 
-Pros:
-* Easy to implement
-* Can be tested on an emulator
+You can check if your device is supported on [this list](https://developers.google.com/ar/discover/#supported_devices)
 
-#### Image recognition
-This is how I would prefer to do it, but I do not have an android device that is capable of handling AR
+## Warning
+Augmented reality is fairly new, results may vary under different circumstances!
 
-Cons:
-* Needs printouts of the images that have to be recognized
+To get the best possible results keep in mind the folowing:
 
-Pros:
-* Easy to implement
-* Multiple devices can have the same start and end points, resulting in comparable measurements
-* More accurate
+1. Needs good lighting to recognize surfaces
+2. Works better outside than indoors
+3. Surfaces need textures, plain colored surfaces are hard to detect
+ 
+ 
+In good circumstances it can be fairly accurate, in testing the start and end point only move a couple of centimeters. This makes it that AR is better suited for this than gps, which is alot less accarute on such small distances even though it is more reliable.
 
-#### Cloud anchors
-Stores to start and end points on googles servers for 24 hours, more info [here](https://developers.google.com/ar/develop/java/cloud-anchors/overview-android). This would be nice to implement next to one of the above so the application is also useable without an internet connection.
-
-Cons:
-* Needs to be setup by another device
-* Takes around 10 sec to save and to recognize points
-* Difficult to implement
-* Saved for only 24 hours
-* Requires an active internet connection
-
-Pros:
-* Multiple devices can have the same start and end points, resulting in comparable measurements
-* No need for extra materials like print outs
-* More accurate (?)
-
-## Models EmulatedMeasurement and World
-
-### EmulatedMeasurement
-
-This class is used to store a measurement on a 2D coordinate, 2D because height feels like it's a bit irrelevant and would just add more innaccuracy. Made into a class instead of an array[3] because it makes it more expendable.
-
-### World
-
-This class stores a list of all the EmulatedMeasurements and a static field for the virtual world size. It also provides methods to get the distance between points in the world, to translate the real world coordinates to the coordinates in the virtual world and a method to calculate the measurement on a certain point.
-
-#### Calculating measurement
-
-For now it just calculates the distance between your location and the measurements and subtracts the distance from the measurement, if it's less than zero it becomes zero.
-
-This is probably not the right way to do it, but it provides a method which can always be altered in a later stage.
-
-## Build warning
-
-When building we get the following warning: "WARNING: API 'variant.getMergeAssets()' is obsolete and has been replaced with 'variant.getMergeAssetsProvider()'. It will be removed at the end of 2019." This is a sceneform bug that is in the hands of those developpers. They have acknowledged the problem and should fix it some time in the future, [github reference](https://github.com/google-ar/sceneform-android-sdk/issues/513).
-
+## Developer notes
+Notes for developers are found [here](developerNotes.md)

@@ -27,6 +27,7 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.sck.RadiationEmulator.ARscanner;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -49,7 +50,7 @@ public class AugmentedImageNode extends AnchorNode {
             startAndStop =
                     ModelRenderable.builder()
                             //.setSource(context, R.raw.andy)
-                            .setSource(context, Uri.parse("21386_Exclamation_Point_v1.sfb"))
+                            .setSource(context, Uri.parse(ARscanner.MODEL_3D))
                             .build();
         }
     }

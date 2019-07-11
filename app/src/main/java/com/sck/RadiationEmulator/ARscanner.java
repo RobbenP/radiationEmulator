@@ -66,6 +66,7 @@ public class ARscanner extends AppCompatActivity {
     // if set to true it will use image recognition to set start and end point
     // if set to false it will use a tap on the screen
     public static final boolean USE_AUGMENTED_IMAGES = true;
+    public static final String MODEL_3D = "21386_Exclamation_Point_v1.sfb";
     private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
     //if set to true it wil use distancing in our virtual world, if set tot true it will use real world distancing
@@ -204,7 +205,7 @@ public class ARscanner extends AppCompatActivity {
 
         ModelRenderable.builder()
                 //.setSource(this, R.raw.andy)
-                .setSource(this, Uri.parse("21386_Exclamation_Point_v1.sfb"))
+                .setSource(this, Uri.parse(MODEL_3D))
                 .build()
                 .thenAccept(renderable -> andyRenderable = renderable)
                 .exceptionally(
