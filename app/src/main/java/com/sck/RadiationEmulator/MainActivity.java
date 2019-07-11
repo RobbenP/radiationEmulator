@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToSetUp(View view) {
-        Intent intent = new Intent(this, setUpWorld.class);
+        Intent intent = new Intent(this, SetUpWorld.class);
         intent.putExtra("world", world);
         this.startActivity(intent);
     }

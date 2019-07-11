@@ -44,7 +44,7 @@ public class World implements Parcelable {
 
     protected World(Parcel in) {
         if (in.readByte() == 0x01) {
-            measurementsList = new ArrayList<EmulatedMeasurement>();
+            measurementsList = new ArrayList<>();
             in.readList(measurementsList, EmulatedMeasurement.class.getClassLoader());
         } else {
             measurementsList = null;

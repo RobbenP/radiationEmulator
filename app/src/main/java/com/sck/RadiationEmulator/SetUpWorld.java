@@ -17,7 +17,7 @@ import com.sck.RadiationEmulator.Model.EmulatedMeasurement;
 import com.sck.RadiationEmulator.Model.World;
 import com.sck.common.helpers.EmulatedMeasurementAdapter;
 
-public class setUpWorld extends AppCompatActivity {
+public class SetUpWorld extends AppCompatActivity {
 
     private World world;
     private EditText xComponent;

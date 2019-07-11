@@ -22,7 +22,6 @@ import java.util.List;
 public class EmulatedMeasurementAdapter extends ArrayAdapter<EmulatedMeasurement> implements View.OnClickListener {
     private Context mContext;
     private List<EmulatedMeasurement> dataSet;
-    private int lastPosition = -1;
 
     public EmulatedMeasurementAdapter(List<EmulatedMeasurement> data, Context context) {
         super(context, R.layout.measure_list_item, data);

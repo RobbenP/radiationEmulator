@@ -80,7 +80,7 @@ public class ARscanner extends AppCompatActivity {
     private Node end = null;
     private TextView myTextView;
     private ImageView fitToScanView;
-    private BarChart horizontalBarChart;
+    private BarChart barChart;
     private TextView measurement;
 
     /**
@@ -131,8 +131,8 @@ public class ARscanner extends AppCompatActivity {
         myTextView = findViewById(R.id.textView);
         fitToScanView = findViewById(R.id.image_view_fit_to_scan);
         fitToScanView.setVisibility(View.INVISIBLE);
-        horizontalBarChart = findViewById(R.id.chart);
-        horizontalBarChart.setVisibility(View.INVISIBLE);
+        barChart = findViewById(R.id.chart);
+        barChart.setVisibility(View.INVISIBLE);
         measurement = findViewById(R.id.txtMeasurement);
         measurement.setVisibility(View.INVISIBLE);
 
@@ -154,28 +154,28 @@ public class ARscanner extends AppCompatActivity {
      * @param measurement the measurement we wish to display on the barchart
      */
     private void setupBarChart(double measurement) {
-        horizontalBarChart.setVisibility(View.VISIBLE);
+        barChart.setVisibility(View.VISIBLE);
         List<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(0f, (float) measurement));
         BarDataSet set = new BarDataSet(entries, "BarDataSet");
-        set.setColor(ContextCompat.getColor(horizontalBarChart.getContext(), getColorBasedOnMeasurement(measurement)));
+        set.setColor(ContextCompat.getColor(barChart.getContext(), getColorBasedOnMeasurement(measurement)));
 
 
         BarData data = new BarData(set);
         data.setBarWidth(2f);
 
-        horizontalBarChart.setData(data);
-        horizontalBarChart.setFitBars(true);
-        horizontalBarChart.getAxisLeft().setAxisMaximum(BARCHART_MAXIMUM);
-        horizontalBarChart.getAxisLeft().setAxisMinimum(0);
-        horizontalBarChart.getAxisRight().setDrawLabels(false);
-        horizontalBarChart.getAxisRight().setEnabled(false);
-        horizontalBarChart.setTouchEnabled(false);
-        horizontalBarChart.getXAxis().setDrawLabels(false);
-        horizontalBarChart.getDescription().setEnabled(false);
+        barChart.setData(data);
+        barChart.setFitBars(true);
+        barChart.getAxisLeft().setAxisMaximum(BARCHART_MAXIMUM);
+        barChart.getAxisLeft().setAxisMinimum(0);
+        barChart.getAxisRight().setDrawLabels(false);
+        barChart.getAxisRight().setEnabled(false);
+        barChart.setTouchEnabled(false);
+        barChart.getXAxis().setDrawLabels(false);
+        barChart.getDescription().setEnabled(false);
         // Hide graph legend
-        horizontalBarChart.getLegend().setEnabled(false);
-        horizontalBarChart.invalidate();
+        barChart.getLegend().setEnabled(false);
+        barChart.invalidate();
     }
 
     /**
