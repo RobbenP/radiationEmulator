@@ -5,6 +5,9 @@ Radiation Emulator
 
 For now the application is written in Java, although google sponsors Kotlin and Kotlin has some interesting features. I have chosen Java because I am more familiar with it and I started building on an example that was made in Java. There should be no difference in performance since both Kotlin and Java compile to Bytecode. Which means it is possible to use Kotlin when adding new classes without any problems. Possibly I will rewrite it to Kotlin because Kotlin is more concise and a bit more readable, and also because it would be a great learning experience.
 
+## UML class diagram
+![UML diagram](RadiatenEmulator.jpg)
+
 ## How to change the rendered 3D model
 Make sure you have the `google sceneform tools` plugin installed, how to add the plugin to Android Studio can be found [here](https://developers.google.com/ar/develop/java/sceneform/#import-sceneform-plugin).
 
