@@ -36,6 +36,12 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(intent);
     }
 
+    public void goToSettings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        intent.putExtra("world", world);
+        this.startActivity(intent);
+    }
+
     /**
      * Closes the application when we press on back here
      */

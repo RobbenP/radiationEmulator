@@ -28,7 +28,6 @@ public class SetUpWorld extends AppCompatActivity {
     private EmulatedMeasurementAdapter myAdapter;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

@@ -4,28 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editText"
+    <Button
+        android:id="@+id/maxValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:ems="10"
-        android:hint="max value"
-        android:inputType="number" />
+        android:ems="10" />
 
     <Button
-        android:id="@+id/button8"
+        android:id="@+id/btnColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Color" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
+        android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:clickable="true"
+        app:backgroundTint="@android:color/holo_blue_bright"
         app:maxImageSize="50dp"
         app:srcCompat="@drawable/delete" />
 

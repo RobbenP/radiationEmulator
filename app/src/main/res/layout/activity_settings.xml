@@ -3,14 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:divider="@drawable/s"
+    android:dividerPadding="0sp"
     android:orientation="vertical"
+    android:padding="5sp"
+    android:showDividers="middle|beginning|end"
     tools:context=".SettingsActivity">
 
     <Switch
         android:id="@+id/switch2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="image recog vs tap" />
+        android:text="image recognition vs tapping the screen"
+        android:textSize="14sp" />
 
     <Switch
         android:id="@+id/switch3"
