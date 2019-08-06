@@ -57,7 +57,7 @@ public class ColorAndValue implements Parcelable, Comparable<ColorAndValue> {
 
     @Override
     public int compareTo(ColorAndValue other) {
-        return Double.compare(this.value, other.getValue());
+        return Double.compare(this.value, other.value);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ColorAndValue implements Parcelable, Comparable<ColorAndValue> {
             return false;
         }
         ColorAndValue other = (ColorAndValue) obj;
-        return (other.getValue() == value);
+        return (other.value == value);
 
     }
 }

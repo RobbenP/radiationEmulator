@@ -1,7 +1,6 @@
 package com.sck.common.helpers;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,21 +40,28 @@ public class ColorAndValueAdapter extends ArrayAdapter<ColorAndValue> {
         ColorAndValue em = getItem(position);
         if (em != null) {
             Button max = result.findViewById(R.id.maxValue);
-            max.setText(em.getValue());
+            max.setText(String.valueOf(em.getValue()));
             max.setOnClickListener(view -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Title");
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Value");
 
 
                 // Set up the input
                 final EditText input = new EditText(getContext());
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setHint("Old value = " + em.getValue());
+
                 builder.setView(input);
 
                 // Set up the buttons
-                builder.setPositiveButton("OK", (dialog, which) -> callback.changeValue(em, Integer.parseInt(input.getText().toString())));
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    String newVal = input.getText().toString();
+                    if (newVal.equals("")) dialog.cancel();
+                    else {
+                        callback.changeValue(em, Integer.parseInt(newVal));
+                        max.setText(newVal);
+                    }
+                });
                 builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
                 builder.show();
@@ -68,7 +74,7 @@ public class ColorAndValueAdapter extends ArrayAdapter<ColorAndValue> {
                     ColorPickerDialogBuilder
                             .with(getContext())
                             .setTitle("Choose color")
-                            .initialColor(Color.BLUE)
+                            .initialColor(em.getColor())
                             .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                             .density(12)
                             .setOnColorSelectedListener(selectedColor -> {
@@ -79,7 +85,7 @@ public class ColorAndValueAdapter extends ArrayAdapter<ColorAndValue> {
                             .build()
                             .show();
                 }
-                ;
+
             });
 
             FloatingActionButton delete = result.findViewById(R.id.delete);

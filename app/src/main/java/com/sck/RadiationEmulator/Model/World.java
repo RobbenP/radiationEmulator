@@ -28,7 +28,6 @@ public class World implements Parcelable {
             return new World[size];
         }
     };
-    private static final int WORLD_SIZE = 100;
     private static World world_instance = new World();
     /**
      * A list of all the EmulatedMeasurements in this world
@@ -51,9 +50,6 @@ public class World implements Parcelable {
         }
     }
 
-    public static int getWorldSize() {
-        return WORLD_SIZE;
-    }
 
     /**
      * Calculates the coordinates from the real world camera coordinates to
@@ -68,8 +64,8 @@ public class World implements Parcelable {
      * @return returns the coordinates in this world of the camera
      * in a 2 dimensional list
      */
-    public static double[] myRelativeCoords(Node start, Node end, Pose camera) {
-        return myRelativeCoords(start, end, camera.tx(), camera.tz());
+    public static double[] myRelativeCoords(Node start, Node end, Pose camera, int worldSize) {
+        return myRelativeCoords(start, end, camera.tx(), camera.tz(), worldSize);
     }
 
 
@@ -86,8 +82,8 @@ public class World implements Parcelable {
      * @return returns the coordinates in this world of the camera
      * in a 2 dimensional list
      */
-    public static double[] myRelativeCoords(Node start, Node end, Node camera) {
-        return myRelativeCoords(start, end, camera.getWorldPosition().x, camera.getWorldPosition().z);
+    public static double[] myRelativeCoords(Node start, Node end, Node camera, int worldSize) {
+        return myRelativeCoords(start, end, camera.getWorldPosition().x, camera.getWorldPosition().z, worldSize);
     }
 
     /**
@@ -105,14 +101,14 @@ public class World implements Parcelable {
      * @return returns the coordinates in this world of the camera
      * in a 2 dimensional list
      */
-    public static double[] myRelativeCoords(Node start, Node end, double x, double y) {
+    public static double[] myRelativeCoords(Node start, Node end, double x, double y, int worldSize) {
         double[] result = new double[2];
         if (end == null) {
             throw new IllegalArgumentException("Start and end have to be set first!");
         }
 
-        double xMultiplier = WORLD_SIZE / (end.getWorldPosition().x - start.getWorldPosition().x);
-        double zMultiplier = WORLD_SIZE / (end.getWorldPosition().z - start.getWorldPosition().z);
+        double xMultiplier = worldSize / (end.getWorldPosition().x - start.getWorldPosition().x);
+        double zMultiplier = worldSize / (end.getWorldPosition().z - start.getWorldPosition().z);
         result[0] = (x - start.getWorldPosition().x) * xMultiplier;
         result[1] = (y - start.getWorldPosition().z) * zMultiplier;
 

@@ -20,6 +20,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
@@ -34,7 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -52,27 +52,33 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.Material;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sck.RadiationEmulator.Model.AugmentedImageNode;
+import com.sck.RadiationEmulator.Model.ColorAndValue;
+import com.sck.RadiationEmulator.Model.Constants;
 import com.sck.RadiationEmulator.Model.World;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class ARscanner extends AppCompatActivity {
-    // if set to true it will use image recognition to set start and end point
-    // if set to false it will use a tap on the screen
-    public static final boolean USE_AUGMENTED_IMAGES = true;
     public static final String MODEL_3D = "21386_Exclamation_Point_v1.sfb";
     private static final String TAG = ARscanner.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
+    // if set to true it will use image recognition to set start and end point
+    // if set to false it will use a tap on the screen
+    public static boolean USE_AUGMENTED_IMAGES;
     //if set to true it wil use distancing in our virtual world, if set tot true it will use real world distancing
-    private static final boolean USE_RELATIVE_DISTANCES = true;
+    private static boolean USE_RELATIVE_DISTANCES;
+    private static int BARCHART_MAXIMUM;
     private final Map<AugmentedImage, AugmentedImageNode> augmentedImageMap = new HashMap<>();
-    private final int BARCHART_MAXIMUM = 200;
     private World world;
     private ArFragment arFragment;
     private ModelRenderable andyRenderable;
@@ -123,6 +129,11 @@ public class ARscanner extends AppCompatActivity {
         if (!checkIsSupportedDeviceOrFinish(this)) {
             return;
         }
+        SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
+        USE_AUGMENTED_IMAGES = settings.getBoolean(Constants.IMAGE_RECOGNITION_OR_TAPPING, true);
+        USE_RELATIVE_DISTANCES = settings.getBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, true);
+        BARCHART_MAXIMUM = settings.getInt(Constants.BARCHART_MAXIMUM_VALUE, 200);
+
         //if a world already exists fetch it, if not build a new world
         world = getIntent().getParcelableExtra("world");
         if (world == null) world = World.getInstance();
@@ -159,7 +170,7 @@ public class ARscanner extends AppCompatActivity {
         List<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(0f, (float) measurement));
         BarDataSet set = new BarDataSet(entries, "BarDataSet");
-        set.setColor(ContextCompat.getColor(barChart.getContext(), getColorBasedOnMeasurement(measurement)));
+        set.setColor(getColorBasedOnMeasurement(measurement));
 
 
         BarData data = new BarData(set);
@@ -186,12 +197,29 @@ public class ARscanner extends AppCompatActivity {
      * @return a color defined in xml/values/color.xml
      */
     private int getColorBasedOnMeasurement(double measurement) {
-        double[] values = {50, 100, 150};
-        int[] colors = {R.color.green, R.color.yellow, R.color.orange, R.color.red};
-        for (int index = 0; index < values.length; index++) {
-            if (measurement < values[index]) return colors[index];
+//        int[] values = {50, 100, 150};
+//        int[] colors = {R.color.green, R.color.yellow, R.color.orange, R.color.red};
+//        ArrayList<ColorAndValue> colorAndValues = new ArrayList<>();
+//        colorAndValues.add(new ColorAndValue(R.color.red, Integer.MAX_VALUE));
+//        colorAndValues.add(new ColorAndValue(R.color.orange, 150));
+//        colorAndValues.add(new ColorAndValue(R.color.green, 50));
+//        colorAndValues.add(new ColorAndValue(R.color.yellow, 100));
+//        Collections.sort(colorAndValues);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<ColorAndValue>>() {
+        }.getType();
+        SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
+        String jsonColorAndValues = settings.getString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, "");
+        ArrayList<ColorAndValue> colorAndValues = gson.fromJson(jsonColorAndValues, type);
+        Collections.sort(colorAndValues);
+        for (ColorAndValue cv : colorAndValues) {
+            if (measurement < cv.getValue()) return cv.getColor();
         }
-        return colors[colors.length - 1];
+        return colorAndValues.get(colorAndValues.size() - 1).getColor();
+//        for (int index = 0; index < values.length; index++) {
+//            if (measurement < values[index]) return colors[index];
+//        }
+//        return colors[colors.length - 1];
 
 
     }
@@ -290,9 +318,11 @@ public class ARscanner extends AppCompatActivity {
 
         if (start != null && end != null) {
             // does the measurement and displays it
+            SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
+            int worldSize = settings.getInt(Constants.WORLD_SIZE, 100);
             double measurementHere;
             if (USE_RELATIVE_DISTANCES)
-                measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose()));
+                measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose(), worldSize));
             else
                 measurementHere = world.GetMeasurementHere(new double[]{arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty()
                 });
@@ -302,15 +332,15 @@ public class ARscanner extends AppCompatActivity {
             setupBarChart(measurementHere);
             measurement.setVisibility(View.VISIBLE);
             measurement.setText(String.format(Locale.ENGLISH, "%.2f", measurementHere));
-            measurement.setTextColor(ContextCompat.getColor(measurement.getContext(), getColorBasedOnMeasurement(measurementHere)));
+            measurement.setTextColor(getColorBasedOnMeasurement(measurementHere));
 
 
             text = "";
-            double[] myCoords;
+            double[] myCoords = new double[2];
             double[] nodeCoords = new double[2];
             if (USE_RELATIVE_DISTANCES) {
-                myCoords = World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose());
-                nodeCoords = World.myRelativeCoords(start, end, start);
+                myCoords = World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose(), worldSize);
+                nodeCoords = World.myRelativeCoords(start, end, start, worldSize);
 
             } else {
                 myCoords[0] = arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx();
@@ -323,7 +353,7 @@ public class ARscanner extends AppCompatActivity {
             text += "2D distance to start is " + String.format(Locale.ENGLISH, "%.2f", World.calculateDistance(myCoords[0], myCoords[1], nodeCoords[0], nodeCoords[1])) + "\n";
             //text += " 3D distance is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty(), node.getWorldPosition().x, node.getWorldPosition().z, node.getWorldPosition().y)) + "\n";
             if (USE_RELATIVE_DISTANCES) {
-                nodeCoords = World.myRelativeCoords(start, end, end);
+                nodeCoords = World.myRelativeCoords(start, end, end, worldSize);
 
             } else {
                 nodeCoords[0] = end.getWorldPosition().x;

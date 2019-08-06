@@ -2,6 +2,7 @@ package com.sck.RadiationEmulator;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -13,23 +14,25 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.sck.RadiationEmulator.Model.Constants;
 import com.sck.RadiationEmulator.Model.EmulatedMeasurement;
 import com.sck.RadiationEmulator.Model.World;
 import com.sck.common.helpers.EmulatedMeasurementAdapter;
 
 public class SetUpWorld extends AppCompatActivity {
 
+    private static int WORLDSIZE;
     private World world;
     private EditText xComponent;
     private EditText yComponent;
     private EditText measureComponent;
     private ListView listAllMeasurements;
 
-    private EmulatedMeasurementAdapter myAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
+        WORLDSIZE = settings.getInt(Constants.WORLD_SIZE, 100);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_set_up_world);
         xComponent = findViewById(R.id.editX);
@@ -50,7 +53,7 @@ public class SetUpWorld extends AppCompatActivity {
         TextView explanation = findViewById(R.id.explanation);
         if (world.getMeasurementsList().isEmpty()) {
             explanation.setVisibility(View.VISIBLE);
-            explanation.setText("The start and end point we set in Augmented Reality, are the start and end of a square (" + World.getWorldSize() + " by " + World.getWorldSize() + ") in our virtual world. Here you can set measurements using these virtual world coordinates." +
+            explanation.setText("The start and end point we set in Augmented Reality, are the start and end of a square (" + WORLDSIZE + " by " + WORLDSIZE + ") in our virtual world. Here you can set measurements using these virtual world coordinates." +
                     "\n\nAfter adding a measurement it will be shown in a list here, if you click on of the coordinates it will be removed from the list.");
         } else explanation.setVisibility(View.GONE);
     }
@@ -70,18 +73,21 @@ public class SetUpWorld extends AppCompatActivity {
         double x = Double.parseDouble(xComponent.getText().toString());
         double y = Double.parseDouble(yComponent.getText().toString());
         double m = Double.parseDouble(measureComponent.getText().toString());
-        if (y > World.getWorldSize()) {
-            Toast.makeText(this, "The Y-coordinate cannot be bigger than " + World.getWorldSize() + "!",
-                    Toast.LENGTH_LONG).show();
-            yComponent.setText("");
-            return;
-        } else if (x > World.getWorldSize()) {
-            Toast.makeText(this, "The X-coordinate cannot be bigger than " + World.getWorldSize() + "!",
-                    Toast.LENGTH_LONG).show();
+        boolean ret = false;
+        if (x > WORLDSIZE) {
+            Toast.makeText(this, "The X-coordinate cannot be bigger than " + WORLDSIZE + "!",
+                    Toast.LENGTH_SHORT).show();
             xComponent.setText("");
-            return;
+            ret = true;
+        }
+        if (y > WORLDSIZE) {
+            Toast.makeText(this, "The Y-coordinate cannot be bigger than " + WORLDSIZE + "!",
+                    Toast.LENGTH_SHORT).show();
+            yComponent.setText("");
+            ret = true;
         }
 
+        if (ret) return;
         EmulatedMeasurement toAdd = new EmulatedMeasurement(x, y, m);
         if (!world.addMeasurement(toAdd)) {
             Snackbar.make(v, "Already in list, not added", Snackbar.LENGTH_SHORT).show();
@@ -90,14 +96,13 @@ public class SetUpWorld extends AppCompatActivity {
         yComponent.setText("");
         measureComponent.setText("");
         updateMeasureList();
-        checkWhetherToShowExplanation();
     }
 
     /**
      * Displays all of the measurements in a TextView
      */
     private void updateMeasureList() {
-        myAdapter = new EmulatedMeasurementAdapter(world.getMeasurementsList(), getApplicationContext());
+        EmulatedMeasurementAdapter myAdapter = new EmulatedMeasurementAdapter(world.getMeasurementsList(), getApplicationContext());
         listAllMeasurements.setAdapter(myAdapter);
         listAllMeasurements.setOnItemClickListener((adapterView, view, i, l) -> {
             EmulatedMeasurement measurement = world.getMeasurementsList().get(i);
@@ -106,7 +111,7 @@ public class SetUpWorld extends AppCompatActivity {
             updateMeasureList();
             checkWhetherToShowExplanation();
         });
-
+        checkWhetherToShowExplanation();
     }
 
     /**

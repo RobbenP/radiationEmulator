@@ -11,14 +11,14 @@
     tools:context=".SettingsActivity">
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/imgrecog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="image recognition vs tapping the screen"
         android:textSize="14sp" />
 
     <Switch
-        android:id="@+id/switch3"
+        android:id="@+id/reldistance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="relative distance" />
@@ -33,14 +33,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="barchart height" />
+            android:text="barchart maximum value" />
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/barchartmax"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
+            android:imeOptions="actionDone"
             android:inputType="number" />
 
     </LinearLayout>
@@ -58,24 +59,50 @@
             android:text="world size" />
 
         <EditText
-            android:id="@+id/editText3"
+            android:id="@+id/worldsize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
+            android:imeOptions="actionDone"
             android:inputType="number" />
     </LinearLayout>
 
-    <ListView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:orientation="horizontal">
+
+        <ListView
+            android:id="@+id/listcolorandvalues"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-    </ListView>
+        <Button
+            android:id="@+id/resetcolors"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:onClick="resetSettings"
+            android:text="Reset all settings" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="Button" />
+        <Button
+            android:id="@+id/addcolorandvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:onClick="addColorAndValue"
+            android:text="Add Color" />
+
+    </LinearLayout>
 </LinearLayout>
