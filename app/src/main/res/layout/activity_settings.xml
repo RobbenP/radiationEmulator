@@ -14,14 +14,20 @@
         android:id="@+id/imgrecog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="image recognition vs tapping the screen"
+        android:text="Image recognition vs tapping the screen"
         android:textSize="14sp" />
 
     <Switch
         android:id="@+id/reldistance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="relative distance" />
+        android:text="Relative distance" />
+
+    <Switch
+        android:id="@+id/customConstants"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Use predefined radiation constants" />
 
     <LinearLayout
         android:layout_width="match_parent"

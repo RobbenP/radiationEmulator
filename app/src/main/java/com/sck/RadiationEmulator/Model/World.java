@@ -208,17 +208,17 @@ public class World implements Parcelable {
             return 0;
         } else {
             double result = 0;
-            for (EmulatedMeasurement m : measurementsList) {
-                double temp = m.getMeasurement() - calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY());
-                result += temp < 0 ? 0 : temp;
-            }
-            //todo what are a and b
 //            for (EmulatedMeasurement m : measurementsList) {
-//                double a = 1;
-//                double b = 1;
-//                double temp = a * (1 / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()), 2)) + b;
+//                double temp = m.getMeasurement() - calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY());
 //                result += temp < 0 ? 0 : temp;
 //            }
+            //todo what are a and b
+            for (EmulatedMeasurement m : measurementsList) {
+                double radiationActivity = m.getRadiationSourceActivity();
+                double radiatoinConstant = m.getRadiationConstant();
+                double temp = radiationActivity * radiatoinConstant / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()), 2);
+                result += temp < 0 ? 0 : temp;
+            }
             return result;
         }
 

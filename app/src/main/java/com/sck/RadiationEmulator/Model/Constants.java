@@ -7,5 +7,6 @@ public final class Constants {
     public static final String BARCHART_MAXIMUM_VALUE = "barchartmax";
     public static final String WORLD_SIZE = "worldsize";
     public static final String LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART = "jsonvalues";
+    public static final String USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM = "spinnerorconstants";
 
 }

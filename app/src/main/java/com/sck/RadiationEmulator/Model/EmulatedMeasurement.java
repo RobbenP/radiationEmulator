@@ -21,19 +21,31 @@ public class EmulatedMeasurement implements Parcelable {
 
     private final double x;
     private final double y;
-    private final double measurement;
+    private final double radiationConstant;
+    private final double radiationSourceActivity;
 
-
-    public EmulatedMeasurement(double x, double y, double measurement) {
+    public EmulatedMeasurement(double x, double y, double radiationConstant, double radiationSourceActivity) {
         this.x = x;
         this.y = y;
-        this.measurement = measurement;
+
+        this.radiationConstant = radiationConstant;
+        this.radiationSourceActivity = radiationSourceActivity;
     }
 
     private EmulatedMeasurement(Parcel in) {
-        measurement = in.readDouble();
         x = in.readDouble();
         y = in.readDouble();
+        radiationConstant = in.readDouble();
+        radiationSourceActivity = in.readDouble();
+
+    }
+
+    public double getRadiationConstant() {
+        return radiationConstant;
+    }
+
+    public double getRadiationSourceActivity() {
+        return radiationSourceActivity;
     }
 
     public double getX() {
@@ -44,9 +56,6 @@ public class EmulatedMeasurement implements Parcelable {
         return y;
     }
 
-    public double getMeasurement() {
-        return measurement;
-    }
 
     @Override
     public int hashCode() {
@@ -75,7 +84,7 @@ public class EmulatedMeasurement implements Parcelable {
 
     @Override
     public String toString() {
-        return "X = " + x + ", Y = " + y + " and measurement = " + measurement;
+        return "X = " + x + ", Y = " + y + " and radiation constant = " + radiationConstant + " with " + radiationSourceActivity + "mCi.";
     }
 
     @Override
@@ -85,8 +94,9 @@ public class EmulatedMeasurement implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeDouble(this.measurement);
         parcel.writeDouble(this.x);
         parcel.writeDouble(this.y);
+        parcel.writeDouble(this.radiationConstant);
+        parcel.writeDouble(this.radiationSourceActivity);
     }
 }

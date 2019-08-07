@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         preferencesEditor.putInt(Constants.WORLD_SIZE, 100);
         preferencesEditor.putBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, true);
         preferencesEditor.putString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, colorAndValuesJson);
+        preferencesEditor.putBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true);
 
         preferencesEditor.apply();
     }

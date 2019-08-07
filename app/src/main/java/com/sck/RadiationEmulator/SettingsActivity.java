@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -35,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
 
     private Switch relativeDistance;
     private Switch imageRecognition;
+    private Switch useSpinner;
     private EditText barchartMax;
     private EditText worldSize;
     private ArrayList<ColorAndValue> colorAndValues = new ArrayList<>();
@@ -106,6 +106,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         barchartMax = findViewById(R.id.barchartmax);
         worldSize = findViewById(R.id.worldsize);
         listAllColorAndValues = findViewById(R.id.listcolorandvalues);
+        useSpinner = findViewById(R.id.customConstants);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -118,10 +119,12 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
 
         boolean booldist = settings.getBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, true);
         boolean boolrecog = settings.getBoolean(Constants.IMAGE_RECOGNITION_OR_TAPPING, true);
+        boolean useCustom = settings.getBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true);
         String strbar = String.valueOf((settings.getInt(Constants.BARCHART_MAXIMUM_VALUE, 200)));
         String worldsize = String.valueOf(settings.getInt(Constants.WORLD_SIZE, 100));
         relativeDistance.setChecked(booldist);
         imageRecognition.setChecked(boolrecog);
+        useSpinner.setChecked(useCustom);
         barchartMax.setText(strbar);
         worldSize.setText(worldsize);
         Gson gson = new Gson();
@@ -130,9 +133,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         String jsonColorAndValues = settings.getString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, "h");
         colorAndValues = gson.fromJson(jsonColorAndValues, type);
         Collections.sort(colorAndValues);
-        for (ColorAndValue c : colorAndValues) {
-            Log.i("mijn", String.valueOf(c.getColor()));
-        }
+
         updateColorAndValues();
     }
 
@@ -183,6 +184,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         preferencesEditor.putInt(Constants.BARCHART_MAXIMUM_VALUE, Integer.parseInt(barchartMax.getText().toString()));
         preferencesEditor.putInt(Constants.WORLD_SIZE, Integer.parseInt(worldSize.getText().toString()));
         preferencesEditor.putBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, relativeDistance.isChecked());
+        preferencesEditor.putBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, useSpinner.isChecked());
         preferencesEditor.putString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, colorAndValuesJson);
 
         preferencesEditor.apply();
@@ -198,10 +200,10 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
 
     public void resetSettings(View view) {
         ArrayList<ColorAndValue> colorAndValues = new ArrayList<>();
-        colorAndValues.add(new ColorAndValue(-16711936, 50));
-        colorAndValues.add(new ColorAndValue(-256, 100));
-        colorAndValues.add(new ColorAndValue(-32768, 150));
-        colorAndValues.add(new ColorAndValue(-65536, Integer.MAX_VALUE));
+        colorAndValues.add(new ColorAndValue(-16711936, 50)); //green
+        colorAndValues.add(new ColorAndValue(-256, 100)); //yellow
+        colorAndValues.add(new ColorAndValue(-32768, 150)); // orange
+        colorAndValues.add(new ColorAndValue(-65536, Integer.MAX_VALUE)); //red
         Collections.sort(colorAndValues);
 
         Gson gson = new Gson();
@@ -214,6 +216,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         preferencesEditor.putInt(Constants.WORLD_SIZE, 100);
         preferencesEditor.putBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, true);
         preferencesEditor.putString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, colorAndValuesJson);
+        preferencesEditor.putBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true);
 
         preferencesEditor.apply();
         updateAllSettings();

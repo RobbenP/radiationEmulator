@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,8 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.sck.RadiationEmulator.Model.Constants;
 import com.sck.RadiationEmulator.Model.EmulatedMeasurement;
+import com.sck.RadiationEmulator.Model.RadiationSource;
 import com.sck.RadiationEmulator.Model.World;
 import com.sck.common.helpers.EmulatedMeasurementAdapter;
+import com.sck.common.helpers.RadiationSourceAdapter;
+
+import java.util.ArrayList;
 
 public class SetUpWorld extends AppCompatActivity {
 
@@ -25,8 +30,10 @@ public class SetUpWorld extends AppCompatActivity {
     private World world;
     private EditText xComponent;
     private EditText yComponent;
-    private EditText measureComponent;
+    private EditText radiationSourceActivity;
+    private EditText radiationConstant;
     private ListView listAllMeasurements;
+    private Spinner radiationConstantsSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +44,27 @@ public class SetUpWorld extends AppCompatActivity {
         setContentView(R.layout.activity_set_up_world);
         xComponent = findViewById(R.id.editX);
         yComponent = findViewById(R.id.editY);
-        measureComponent = findViewById(R.id.editMeasure);
+        radiationSourceActivity = findViewById(R.id.editMeasure);
+        radiationConstant = findViewById(R.id.radiationconstant);
         listAllMeasurements = findViewById(R.id.scrollListAll);
         listAllMeasurements.setVisibility(View.VISIBLE);
+        radiationConstantsSpinner = findViewById(R.id.source);
+
+        if (settings.getBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true)) {
+            radiationConstantsSpinner.setVisibility(View.VISIBLE);
+            radiationConstant.setVisibility(View.INVISIBLE);
+            ArrayList<RadiationSource> radiationSources = new ArrayList<>();
+            //todo use real values and real names
+            radiationSources.add(new RadiationSource("Test 1", 1));
+            radiationSources.add(new RadiationSource("Test 5", 5));
+            radiationSources.add(new RadiationSource("Test 9.5", 9.5));
+            RadiationSourceAdapter myAdapter = new RadiationSourceAdapter(radiationSources, android.R.layout.simple_spinner_item, this);
+            myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            radiationConstantsSpinner.setAdapter(myAdapter);
+        } else {
+            radiationConstantsSpinner.setVisibility(View.INVISIBLE);
+            radiationConstant.setVisibility(View.VISIBLE);
+        }
         world = getIntent().getParcelableExtra("world") == null ? World.getInstance() : getIntent().getParcelableExtra("world");
         updateMeasureList();
 
@@ -64,15 +89,19 @@ public class SetUpWorld extends AppCompatActivity {
      * Also checks if it already has been added to avoid duplicates.
      */
     public void addToWorld(View v) {
-
-        if (xComponent.getText().toString().equals("") || yComponent.getText().toString().equals("") || measureComponent.getText().toString().equals("")) {
+        SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
+        if (xComponent.getText().toString().equals("") || yComponent.getText().toString().equals("") || radiationSourceActivity.getText().toString().equals("") || (radiationConstant.getText().toString().equals("") && !settings.getBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true))) {
             Snackbar.make(v, "Please fill in the fields!", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
         double x = Double.parseDouble(xComponent.getText().toString());
         double y = Double.parseDouble(yComponent.getText().toString());
-        double m = Double.parseDouble(measureComponent.getText().toString());
+        double sourceActivity = Double.parseDouble(radiationSourceActivity.getText().toString());
+        double constant;
+        if (settings.getBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true)) {
+            constant = ((RadiationSource) radiationConstantsSpinner.getSelectedItem()).getRadiationConstant();
+        } else constant = Double.parseDouble(radiationConstant.getText().toString());
         boolean ret = false;
         if (x > WORLDSIZE) {
             Toast.makeText(this, "The X-coordinate cannot be bigger than " + WORLDSIZE + "!",
@@ -88,13 +117,14 @@ public class SetUpWorld extends AppCompatActivity {
         }
 
         if (ret) return;
-        EmulatedMeasurement toAdd = new EmulatedMeasurement(x, y, m);
+        EmulatedMeasurement toAdd = new EmulatedMeasurement(x, y, constant, sourceActivity);
         if (!world.addMeasurement(toAdd)) {
             Snackbar.make(v, "Already in list, not added", Snackbar.LENGTH_SHORT).show();
         }
         xComponent.setText("");
         yComponent.setText("");
-        measureComponent.setText("");
+        radiationSourceActivity.setText("");
+        radiationConstant.setText("");
         updateMeasureList();
     }
 
@@ -118,7 +148,13 @@ public class SetUpWorld extends AppCompatActivity {
      * Goes to the scanner but displays a warning if the fields aren't empty
      */
     public void goToARscanner(View v) {
-        if (!xComponent.getText().toString().equals("") || !yComponent.getText().toString().equals("") || !measureComponent.getText().toString().equals("")) {
+        SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
+        if (xComponent.getText().toString().equals("") && yComponent.getText().toString().equals("") && radiationSourceActivity.getText().toString().equals("") && (radiationConstant.getText().toString().equals("") || settings.getBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true))) {
+            Intent intent = new Intent(this, ARscanner.class);
+
+            intent.putExtra("world", world);
+            this.startActivity(intent);
+        } else {
             new AlertDialog.Builder(this)
                     .setTitle("Exit setup?")
                     .setMessage("Some fields are not saved, are you sure you want to leave this page?")
@@ -130,11 +166,6 @@ public class SetUpWorld extends AppCompatActivity {
                     })
                     .setNegativeButton("Cancel", null)
                     .create().show();
-        } else {
-            Intent intent = new Intent(this, ARscanner.class);
-
-            intent.putExtra("world", world);
-            this.startActivity(intent);
         }
 
 
@@ -146,7 +177,8 @@ public class SetUpWorld extends AppCompatActivity {
     public void clearWorld(View v) {
         xComponent.setText("");
         yComponent.setText("");
-        measureComponent.setText("");
+        radiationSourceActivity.setText("");
+        radiationConstant.setText("");
         world.clearMeasurements();
         updateMeasureList();
     }
