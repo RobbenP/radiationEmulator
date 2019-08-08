@@ -34,12 +34,11 @@ public class World implements Parcelable {
      */
     private List<EmulatedMeasurement> measurementsList = new ArrayList<>();
 
+    private World() {
+    }
 //    private World(Parcel in) {
 //        measurementsList = in.readList();
 //    }
-
-    private World() {
-    }
 
     protected World(Parcel in) {
         if (in.readByte() == 0x01) {
@@ -49,7 +48,6 @@ public class World implements Parcelable {
             measurementsList = null;
         }
     }
-
 
     /**
      * Calculates the coordinates from the real world camera coordinates to
@@ -67,7 +65,6 @@ public class World implements Parcelable {
     public static double[] myRelativeCoords(Node start, Node end, Pose camera, int worldSize) {
         return myRelativeCoords(start, end, camera.tx(), camera.tz(), worldSize);
     }
-
 
     /**
      * Calculates the coordinates from the real world camera coordinates to
@@ -161,6 +158,9 @@ public class World implements Parcelable {
         return measurementsList;
     }
 
+    public void setMeasurementsList(List<EmulatedMeasurement> measurementsList) {
+        this.measurementsList = measurementsList;
+    }
 
     /**
      * Adds a EmulatedMeasurement to the list of EmulatedMeasurements of this world, if it
