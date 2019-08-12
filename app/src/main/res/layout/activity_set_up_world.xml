@@ -7,6 +7,21 @@
     tools:context=".SetUpWorld">
 
     <EditText
+        android:id="@+id/editX"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="X-coordinates"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        app:layout_constraintBottom_toBottomOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+    <EditText
         android:id="@+id/editMeasure"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -32,20 +47,6 @@
         app:layout_constraintStart_toStartOf="@+id/editX"
         app:layout_constraintTop_toTopOf="@+id/textView6" />
 
-    <EditText
-        android:id="@+id/editX"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="X-coordinates"
-        android:imeOptions="actionDone"
-        android:inputType="numberDecimal"
-        app:layout_constraintBottom_toBottomOf="@+id/textView5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toTopOf="@+id/textView5" />
 
     <TextView
         android:id="@+id/textView4"
@@ -148,7 +149,7 @@
         android:layout_height="41dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="Set the radiation constant"
+        android:text="Set the exposure rate constant"
         app:layout_constraintEnd_toEndOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 

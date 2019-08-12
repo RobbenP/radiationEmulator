@@ -202,8 +202,8 @@ public class World implements Parcelable {
      * @param myRelativeLocation The location where there has to be a measurement
      * @return The measurement on myRelativeLocation as a double
      */
-    //TODO now it just uses the distance to EmulatedMeasurements to calculate the measurement, this probably has to be changed to a more scientific calculation
-    public double GetMeasurementHere(double[] myRelativeLocation) {
+
+    public double getMeasurementHere(double[] myRelativeLocation) {
         if (measurementsList.isEmpty()) {
             return 0;
         } else {
@@ -216,7 +216,7 @@ public class World implements Parcelable {
             for (EmulatedMeasurement m : measurementsList) {
                 double radiationActivity = m.getRadiationSourceActivity();
                 double radiatoinConstant = m.getRadiationConstant();
-                double temp = radiationActivity * radiatoinConstant / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()), 2);
+                double temp = radiationActivity * radiatoinConstant / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()) * 100, 2) * 9.33; //in mSv
                 result += temp < 0 ? 0 : temp;
             }
             return result;

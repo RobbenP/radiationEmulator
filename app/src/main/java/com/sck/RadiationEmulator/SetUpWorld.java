@@ -54,10 +54,17 @@ public class SetUpWorld extends AppCompatActivity {
             radiationConstantsSpinner.setVisibility(View.VISIBLE);
             radiationConstant.setVisibility(View.INVISIBLE);
             ArrayList<RadiationSource> radiationSources = new ArrayList<>();
-            //todo use real values and real names
-            radiationSources.add(new RadiationSource("Test 1", 1));
-            radiationSources.add(new RadiationSource("Test 5", 5));
-            radiationSources.add(new RadiationSource("Test 9.5", 9.5));
+
+            radiationSources.add(new RadiationSource("Cesium-137", 3.3));
+            radiationSources.add(new RadiationSource("Cobalt-57", 0.9));
+            radiationSources.add(new RadiationSource("Cobalt-60", 13.2));
+            radiationSources.add(new RadiationSource("Iodine-125", 0.7));
+            radiationSources.add(new RadiationSource("Iodine-131", 2.2));
+            radiationSources.add(new RadiationSource("Magnese-54", 4.7));
+            radiationSources.add(new RadiationSource("Radium-226", 8.25));
+            radiationSources.add(new RadiationSource("Sodium-22", 12));
+            radiationSources.add(new RadiationSource("Sodium-24", 18.4));
+            radiationSources.add(new RadiationSource("Zinc-65", 2.7));
             RadiationSourceAdapter myAdapter = new RadiationSourceAdapter(radiationSources, android.R.layout.simple_spinner_item, this);
             myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             radiationConstantsSpinner.setAdapter(myAdapter);

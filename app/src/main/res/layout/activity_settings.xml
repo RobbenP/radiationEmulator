@@ -14,7 +14,7 @@
         android:id="@+id/imgrecog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Image recognition vs tapping the screen"
+        android:text="Image recognition (or tapping on the screen)"
         android:textSize="14sp" />
 
     <Switch

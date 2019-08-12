@@ -322,16 +322,16 @@ public class ARscanner extends AppCompatActivity {
             int worldSize = settings.getInt(Constants.WORLD_SIZE, 100);
             double measurementHere;
             if (USE_RELATIVE_DISTANCES)
-                measurementHere = world.GetMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose(), worldSize));
+                measurementHere = world.getMeasurementHere(World.myRelativeCoords(start, end, arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose(), worldSize));
             else
-                measurementHere = world.GetMeasurementHere(new double[]{arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty()
+                measurementHere = world.getMeasurementHere(new double[]{arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty()
                 });
             ;
             String text = "Measurement here = " + measurementHere + "\n";
             myTextView.setText(text);
             setupBarChart(measurementHere);
             measurement.setVisibility(View.VISIBLE);
-            measurement.setText(String.format(Locale.ENGLISH, "%.2f", measurementHere));
+            measurement.setText(String.format(Locale.ENGLISH, "%.2f", measurementHere) + "mSv/h");
             measurement.setTextColor(getColorBasedOnMeasurement(measurementHere));
 
 

@@ -75,8 +75,10 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
                 .setOnColorSelectedListener(selectedColor -> {
                 })
                 .setPositiveButton("ok", (dialo, selectedColor, allColors) -> {
-                    colorAndValues.add(new ColorAndValue(selectedColor, Integer.parseInt(valuetoadd)));
-                    updateColorAndValues();
+                    if (!colorAndValues.contains(new ColorAndValue(selectedColor, Integer.parseInt(valuetoadd)))) {
+                        colorAndValues.add(new ColorAndValue(selectedColor, Integer.parseInt(valuetoadd)));
+                        updateColorAndValues();
+                    }
                 })
                 .setNegativeButton("cancel", (dialo, whic) -> {
                 })
