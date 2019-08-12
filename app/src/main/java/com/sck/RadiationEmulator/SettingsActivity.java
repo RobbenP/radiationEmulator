@@ -200,8 +200,10 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
 
     }
 
+
     public void resetSettings(View view) {
         ArrayList<ColorAndValue> colorAndValues = new ArrayList<>();
+        //TODO better reset values
         colorAndValues.add(new ColorAndValue(-16711936, 50)); //green
         colorAndValues.add(new ColorAndValue(-256, 100)); //yellow
         colorAndValues.add(new ColorAndValue(-32768, 150)); // orange

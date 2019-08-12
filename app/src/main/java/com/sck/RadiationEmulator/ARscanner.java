@@ -366,7 +366,7 @@ public class ARscanner extends AppCompatActivity {
             text += "My relative coordinates are " + String.format(Locale.ENGLISH, "%.2f", myCoords[0]) + "," + String.format("%.2f", myCoords[1]) + "\n";
             //tex += "Distance between nodes is " + Math.pow(start.getWorldPosition().x - end.getWorldPosition().z,2 ) ;
 
-
+            //TODO maybe add some useful text here
             myTextView.append(text);
         } else myTextView.append("Waiting for start and end point te be set. \n");
 
