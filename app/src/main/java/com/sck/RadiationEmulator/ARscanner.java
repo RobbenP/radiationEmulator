@@ -331,7 +331,7 @@ public class ARscanner extends AppCompatActivity {
             myTextView.setText(text);
             setupBarChart(measurementHere);
             measurement.setVisibility(View.VISIBLE);
-            measurement.setText(String.format(Locale.ENGLISH, "%.2f", measurementHere) + "mSv/h");
+            measurement.setText(String.format(Locale.ENGLISH, "%.2f", measurementHere) + "microSv/h");
             measurement.setTextColor(getColorBasedOnMeasurement(measurementHere));
 
 

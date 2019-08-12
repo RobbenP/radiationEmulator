@@ -216,7 +216,7 @@ public class World implements Parcelable {
             for (EmulatedMeasurement m : measurementsList) {
                 double radiationActivity = m.getRadiationSourceActivity();
                 double radiatoinConstant = m.getRadiationConstant();
-                double temp = radiationActivity * radiatoinConstant / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()) * 100, 2) * 9.33; //in mSv
+                double temp = radiationActivity * radiatoinConstant / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()) * 100, 2) * 9.33 * 1000; //in microSv
                 result += temp < 0 ? 0 : temp;
             }
             return result;
