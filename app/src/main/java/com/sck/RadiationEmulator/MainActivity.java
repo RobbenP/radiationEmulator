@@ -3,6 +3,7 @@ package com.sck.RadiationEmulator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -26,6 +27,7 @@ import com.sck.RadiationEmulator.Model.World;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NfcAdapter.CreateNdefMessageCallback, NfcAdapter.OnNdefPushCompleteCallback {
 
@@ -73,22 +75,27 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
     protected void onCreate(Bundle savedInstanceState) {
         //if a world already exists fetch it
         world = getIntent().getParcelableExtra("world");
+        if (world == null) world = World.getInstance();
         super.onCreate(savedInstanceState);
-        myNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
+            myNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+            if (myNfcAdapter == null) {
+                Toast.makeText(this, "No NFC available", Toast.LENGTH_SHORT).show();
+            } else {
+                // Register callback to set NDEF message
+                myNfcAdapter.setNdefPushMessageCallback(this, this);
+                // Register callback to listen for message-sent success
+                myNfcAdapter.setOnNdefPushCompleteCallback(this, this);
+            }
+        } else Toast.makeText(this, "No NFC available", Toast.LENGTH_SHORT).show();
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
         if (!settings.contains(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART)) {
             resetSettings(settings);
         }
-        if (myNfcAdapter == null) {
-            Toast.makeText(this, "No NFC available", Toast.LENGTH_SHORT).show();
-        } else {
-            // Register callback to set NDEF message
-            myNfcAdapter.setNdefPushMessageCallback(this, this);
-            // Register callback to listen for message-sent success
-            myNfcAdapter.setOnNdefPushCompleteCallback(this, this);
-        }
+
 
     }
 
@@ -143,7 +150,9 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
         Gson gson = new Gson();
         Type type = new TypeToken<ArrayList<EmulatedMeasurement>>() {
         }.getType();
-        world.setMeasurementsList(gson.fromJson(new String(msg.getRecords()[0].getPayload()), type));
+        String messageJson = new String(msg.getRecords()[0].getPayload());
+        List<EmulatedMeasurement> messageList = gson.fromJson(messageJson, type);
+        world.setMeasurementsList(messageList);
         Toast.makeText(getApplicationContext(), "Received sources in the world!", Toast.LENGTH_LONG).show();
         // record 0 contains the MIME type, record 1 is the AAR, if present
 
