@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -85,6 +86,7 @@ public class SetUpWorld extends AppCompatActivity {
         TextView explanation = findViewById(R.id.explanation);
         if (world.getMeasurementsList().isEmpty()) {
             explanation.setVisibility(View.VISIBLE);
+            explanation.setMovementMethod(new ScrollingMovementMethod());
             explanation.setText("The start and end point we set in Augmented Reality, are the start and end of a square (" + WORLDSIZE + " by " + WORLDSIZE + ") in our virtual world. Here you can set measurements using these virtual world coordinates." +
                     "\n\nAfter adding a measurement it will be shown in a list here, if you click on of the coordinates it will be removed from the list.");
         } else explanation.setVisibility(View.GONE);
