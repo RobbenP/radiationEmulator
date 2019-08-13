@@ -192,9 +192,11 @@ public class ARscanner extends AppCompatActivity {
 
     /**
      * Returns the right color depending on how dangerous the measurement is
+     * If the measurement exceeds the highest value in the list it will take
+     * the color of the highest value in the last
      *
      * @param measurement the measurement of which we need to know to color
-     * @return a color defined in xml/values/color.xml
+     * @return a color based on the settings
      */
     private int getColorBasedOnMeasurement(double measurement) {
 //        int[] values = {50, 100, 150};

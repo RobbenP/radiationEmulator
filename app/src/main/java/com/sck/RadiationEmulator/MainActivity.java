@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
     };
     private World world;
     private NfcAdapter myNfcAdapter;
+    private Button enableNFC;
+    private Button enableBeam;
 
     public static void resetSettings(SharedPreferences settings) {
 
@@ -77,10 +81,35 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
         world = getIntent().getParcelableExtra("world");
         if (world == null) world = World.getInstance();
         super.onCreate(savedInstanceState);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setContentView(R.layout.activity_main);
+        enableNFC = findViewById(R.id.nfc);
+        enableBeam = findViewById(R.id.AndroidBeam);
+
+        checkNFC();
+
+        SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
+        if (!settings.contains(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART)) {
+            resetSettings(settings);
+        }
+
+
+    }
+
+    private void checkNFC() {
+        enableBeam.setVisibility(View.INVISIBLE);
+        enableNFC.setVisibility(View.INVISIBLE);
         if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
             myNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-            if (myNfcAdapter == null) {
+            if (myNfcAdapter == null || !myNfcAdapter.isEnabled() || !myNfcAdapter.isNdefPushEnabled()) {
                 Toast.makeText(this, "No NFC available", Toast.LENGTH_SHORT).show();
+                if (!myNfcAdapter.isEnabled() && getPackageManager().resolveActivity(new Intent(Settings.ACTION_NFC_SETTINGS), 0) != null)
+                    enableNFC.setVisibility(View.VISIBLE);
+                if (!myNfcAdapter.isNdefPushEnabled() && getPackageManager().resolveActivity(new Intent(Settings.ACTION_NFCSHARING_SETTINGS), 0) != null)
+                    enableBeam.setVisibility(View.VISIBLE);
+
+
             } else {
                 // Register callback to set NDEF message
                 myNfcAdapter.setNdefPushMessageCallback(this, this);
@@ -88,15 +117,6 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
                 myNfcAdapter.setOnNdefPushCompleteCallback(this, this);
             }
         } else Toast.makeText(this, "No NFC available", Toast.LENGTH_SHORT).show();
-
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_main);
-        SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
-        if (!settings.contains(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART)) {
-            resetSettings(settings);
-        }
-
-
     }
 
     public void goToScanner(View view) {
@@ -118,6 +138,15 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
         this.startActivity(intent);
     }
 
+    public void turnOnNFC(View v) {
+        startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
+    }
+
+    public void turnOnBeam(View v) {
+        startActivity(new Intent(Settings.ACTION_NFCSHARING_SETTINGS));
+    }
+
+
     /**
      * Closes the application when we press on back here
      */
@@ -137,9 +166,11 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
     @Override
     public void onResume() {
         super.onResume();
+        checkNFC();
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
         }
+
     }
 
     private void processIntent(Intent intent) {

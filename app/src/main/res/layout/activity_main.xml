@@ -47,4 +47,43 @@
         app:maxImageSize="56dp"
         app:srcCompat="@android:drawable/ic_menu_manage" />
 
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="32dp"
+        android:text="If NFC is enabled you can tap another device with the app open to send (or receive) all the sources defined in the setup screen "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton3" />
+
+    <Button
+        android:id="@+id/nfc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:backgroundTint="@android:color/holo_blue_bright"
+        android:onClick="turnOnNFC"
+        android:text="Enable NFC"
+        app:layout_constraintBottom_toBottomOf="@+id/AndroidBeam"
+        app:layout_constraintStart_toStartOf="@+id/textView8"
+        app:layout_constraintTop_toTopOf="@+id/AndroidBeam" />
+
+    <Button
+        android:id="@+id/AndroidBeam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@android:color/holo_blue_bright"
+        android:onClick="turnOnBeam"
+        android:text="Enable Beam"
+        app:layout_constraintEnd_toEndOf="@+id/textView8"
+        app:layout_constraintStart_toEndOf="@+id/nfc"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
