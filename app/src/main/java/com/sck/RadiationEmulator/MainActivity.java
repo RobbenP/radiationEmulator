@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
 
     }
 
+    /**
+     * Enables or disables the buttons to turn on nfc depending on whether it is turned on or not
+     */
     private void checkNFC() {
         enableBeam.setVisibility(View.INVISIBLE);
         enableNFC.setVisibility(View.INVISIBLE);
@@ -173,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
 
     }
 
+    /**
+     * Handles the received date from NFC
+     */
     private void processIntent(Intent intent) {
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
                 NfcAdapter.EXTRA_NDEF_MESSAGES);
@@ -189,6 +195,10 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
 
     }
 
+
+    /**
+     * Creates the message to send over NFC
+     */
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
         Gson gson = new Gson();

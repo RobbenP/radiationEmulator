@@ -86,6 +86,9 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
                 .show();
     }
 
+    /**
+     * BackButton pressed
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         saveSettings();
@@ -163,8 +166,9 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
     public void changeValue(ColorAndValue colorAndValue, int value) {
         colorAndValues.remove(colorAndValue);
         colorAndValue.setValue(value);
-        colorAndValues.add(colorAndValue);
-        Collections.sort(colorAndValues);
+        if (!colorAndValues.contains(colorAndValue))
+            colorAndValues.add(colorAndValue);
+        
         updateColorAndValues();
     }
 

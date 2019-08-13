@@ -248,10 +248,10 @@ public class ARscanner extends AppCompatActivity {
                         });
 
 
-        /**
-         * Listener for detecting taps on recognized surfaces
-         *
-         * only listens for 2 taps, the starting point and the end point. If those are already found ignore tap
+        /*
+          Listener for detecting taps on recognized surfaces
+
+          only listens for 2 taps, the starting point and the end point. If those are already found ignore tap
          */
         arFragment.setOnTapArPlaneListener(
                 (HitResult hitResult, Plane plane, MotionEvent motionEvent) -> {
