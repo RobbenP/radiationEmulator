@@ -93,3 +93,11 @@ Final class containing mostly string constants used get settings from `SharedPre
 
 When building we get the following warning: "WARNING: API 'variant.getMergeAssets()' is obsolete and has been replaced with 'variant.getMergeAssetsProvider()'. It will be removed at the end of 2019." This is a sceneform bug that is in the hands of those developpers. They have acknowledged the problem and should fix it some time in the future, [github reference](https://github.com/google-ar/sceneform-android-sdk/issues/513).
 
+
+## Distributing the application
+
+1. Google play: requires google developer account -> 25$ below some interesting links if you want to go this route  
+a. [Sign your app](https://developer.android.com/studio/publish/app-signing)  
+b. [Let google do the signing](https://developer.android.com/guide/app-bundle/)  
+c. [Upload to the playstore](https://support.google.com/googleplay/android-developer/answer/113469?hl=en)
+2. Give .apk file to users (need to enable install from unknown devices on phones that want to run the app). Follow [this link](https://stackoverflow.com/questions/16709848/build-unsigned-apk-file-with-android-studio) to learn how you should build your .apk file.
