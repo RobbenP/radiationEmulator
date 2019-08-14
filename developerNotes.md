@@ -1,5 +1,9 @@
 Radiation Emulator
 ========
+## How to start developing the app further on a real device 
+Make sure the the device supports ARCore, [devices](https://developers.google.com/ar/discover/#supported_devices) that support it, install [ARCore](https://play.google.com/store/apps/details?id=com.google.ar.core&hl=en) and make sure the phone has USB debugging enabled, [how to](https://www.embarcadero.com/starthere/xe5/mobdevsetup/android/en/enabling_usb_debugging_on_an_android_device.html).
+
+Now just open the project in Android Studio, click run and select your device.
 
 ## Language: Java vs Kotlin
 

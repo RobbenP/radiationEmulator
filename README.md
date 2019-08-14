@@ -18,12 +18,12 @@ Before launching the app on your phone you have to install [ARCore](https://play
 
 You can check if your device is supported on [this list](https://developers.google.com/ar/discover/#supported_devices)
 
-##How to use it?
+## How to use it?
 1. Go to `SETUP` to add some sources: you need to enter their coordinates in the virtual world, their activity either in mCl or MBq (changeable in the settings) and their exposure rate constant, either via a drop-down or by manual input(changeable in the settings). Now you can start the measurements step 3 or send your sources to another device step 2.
 1. `Optional` Go back to the main screen, if NFC and android beam or disabled there will be buttons to enable them. To send your sources to another device just make sure the other device also has NFC and android beam enabled, now just put both phones with their backs to each other. After pressing the touch to beam the other device will open the application and your sources will also be loaded in their application.
 2. Go to `START MEASUREMENTS` depending on your settings you will now have to scan 2 images or tap twice to set the start and end of the area. Afterwards these points will stay visible on your camera because there is an object placed in augmented reality.
 
-##Settings
+## Settings
 * Image recognition (or tapping the screen)  
 If this is enabled the start and end points have to be set by scanning an image, if disabled they have to be set by tapping on the screen.  
 

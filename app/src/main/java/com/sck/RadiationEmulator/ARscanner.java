@@ -234,6 +234,7 @@ public class ARscanner extends AppCompatActivity {
         ArrayList<ColorAndValue> colorAndValues = gson.fromJson(jsonColorAndValues, type);
         Collections.sort(colorAndValues);
         int len = colorAndValues.size();
+        //todo these local values should probably be changeable by the user in the settings
         int slowestInterval = 2000; //2 sec
         int fastestInterval = 400; // 0.4 sec
         int lowestInterval = 300;
