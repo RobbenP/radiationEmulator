@@ -50,10 +50,13 @@ public class SetUpWorld extends AppCompatActivity {
         listAllMeasurements = findViewById(R.id.scrollListAll);
         listAllMeasurements.setVisibility(View.VISIBLE);
         radiationConstantsSpinner = findViewById(R.id.source);
-
+        if (settings.getBoolean(Constants.USE_MCI_FOR_ACTIVITY_OR_BQ, true))
+            radiationSourceActivity.setHint("Activity in mCi");
+        else radiationSourceActivity.setHint("Activity in MBq");
         if (settings.getBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true)) {
             radiationConstantsSpinner.setVisibility(View.VISIBLE);
             radiationConstant.setVisibility(View.INVISIBLE);
+            //todo add to constants
             ArrayList<RadiationSource> radiationSources = new ArrayList<>();
 
             radiationSources.add(new RadiationSource("Cesium-137", 3.3));
@@ -107,6 +110,8 @@ public class SetUpWorld extends AppCompatActivity {
         double x = Double.parseDouble(xComponent.getText().toString());
         double y = Double.parseDouble(yComponent.getText().toString());
         double sourceActivity = Double.parseDouble(radiationSourceActivity.getText().toString());
+        if (!settings.getBoolean(Constants.USE_MCI_FOR_ACTIVITY_OR_BQ, true))
+            sourceActivity = sourceActivity / 37;
         double constant;
         if (settings.getBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true)) {
             constant = ((RadiationSource) radiationConstantsSpinner.getSelectedItem()).getRadiationConstant();

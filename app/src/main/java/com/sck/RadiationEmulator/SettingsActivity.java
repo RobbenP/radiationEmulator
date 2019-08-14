@@ -36,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
     private Switch imageRecognition;
     private Switch useSpinner;
     private EditText barchartMax;
+    private Switch activityInmCi;
     private EditText worldSize;
     private ArrayList<ColorAndValue> colorAndValues = new ArrayList<>();
     private ListView listAllColorAndValues;
@@ -112,6 +113,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         worldSize = findViewById(R.id.worldsize);
         listAllColorAndValues = findViewById(R.id.listcolorandvalues);
         useSpinner = findViewById(R.id.customConstants);
+        activityInmCi = findViewById(R.id.activityInmCi);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -125,8 +127,10 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         boolean booldist = settings.getBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, true);
         boolean boolrecog = settings.getBoolean(Constants.IMAGE_RECOGNITION_OR_TAPPING, true);
         boolean useCustom = settings.getBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true);
+        boolean mCi = settings.getBoolean(Constants.USE_MCI_FOR_ACTIVITY_OR_BQ, true);
         String strbar = String.valueOf((settings.getInt(Constants.BARCHART_MAXIMUM_VALUE, 200)));
         String worldsize = String.valueOf(settings.getInt(Constants.WORLD_SIZE, 100));
+        activityInmCi.setChecked(mCi);
         relativeDistance.setChecked(booldist);
         imageRecognition.setChecked(boolrecog);
         useSpinner.setChecked(useCustom);
@@ -168,7 +172,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         colorAndValue.setValue(value);
         if (!colorAndValues.contains(colorAndValue))
             colorAndValues.add(colorAndValue);
-        
+
         updateColorAndValues();
     }
 
@@ -191,6 +195,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         preferencesEditor.putInt(Constants.WORLD_SIZE, Integer.parseInt(worldSize.getText().toString()));
         preferencesEditor.putBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, relativeDistance.isChecked());
         preferencesEditor.putBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, useSpinner.isChecked());
+        preferencesEditor.putBoolean(Constants.USE_MCI_FOR_ACTIVITY_OR_BQ, activityInmCi.isChecked());
         preferencesEditor.putString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, colorAndValuesJson);
 
         preferencesEditor.apply();
@@ -223,6 +228,7 @@ public class SettingsActivity extends AppCompatActivity implements ColorAndValue
         preferencesEditor.putInt(Constants.BARCHART_MAXIMUM_VALUE, 200);
         preferencesEditor.putInt(Constants.WORLD_SIZE, 100);
         preferencesEditor.putBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, true);
+        preferencesEditor.putBoolean(Constants.USE_MCI_FOR_ACTIVITY_OR_BQ, true);
         preferencesEditor.putString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, colorAndValuesJson);
         preferencesEditor.putBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true);
 

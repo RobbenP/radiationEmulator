@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
 
     public static void resetSettings(SharedPreferences settings) {
 
+        //todo move to constants
+
         ArrayList<ColorAndValue> colorAndValues = new ArrayList<>();
         colorAndValues.add(new ColorAndValue(-16711936, 50));
         colorAndValues.add(new ColorAndValue(-256, 100));
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
         preferencesEditor.putInt(Constants.BARCHART_MAXIMUM_VALUE, 200);
         preferencesEditor.putInt(Constants.WORLD_SIZE, 100);
         preferencesEditor.putBoolean(Constants.RELATIVE_DISTANCE_OR_REAL, true);
+        preferencesEditor.putBoolean(Constants.USE_MCI_FOR_ACTIVITY_OR_BQ, true);
         preferencesEditor.putString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, colorAndValuesJson);
         preferencesEditor.putBoolean(Constants.USE_RADIATION_CONSTANTS_FROM_SPINNER_OR_CUSTUM, true);
 

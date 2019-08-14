@@ -40,6 +40,10 @@ public class EmulatedMeasurement implements Parcelable {
 
     }
 
+    public double getRadiationConstantInMBecquerel() {
+        return radiationConstant * 37;
+    }
+
     public double getRadiationConstant() {
         return radiationConstant;
     }
@@ -55,7 +59,6 @@ public class EmulatedMeasurement implements Parcelable {
     public double getY() {
         return y;
     }
-
 
     @Override
     public int hashCode() {

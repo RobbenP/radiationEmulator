@@ -203,7 +203,7 @@ public class World implements Parcelable {
      * @return The measurement on myRelativeLocation as a double
      */
 
-    public double getMeasurementHere(double[] myRelativeLocation) {
+    public double getMeasurementHere(double[] myRelativeLocation, boolean usemCi) {
         if (measurementsList.isEmpty()) {
             return 0;
         } else {
@@ -212,11 +212,13 @@ public class World implements Parcelable {
 //                double temp = m.getMeasurement() - calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY());
 //                result += temp < 0 ? 0 : temp;
 //            }
-            //todo what are a and b
             for (EmulatedMeasurement m : measurementsList) {
                 double radiationActivity = m.getRadiationSourceActivity();
-                double radiatoinConstant = m.getRadiationConstant();
-                double temp = radiationActivity * radiatoinConstant / Math.pow(calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()) * 100, 2) * 9.33 * 1000; //in microSv
+                double radiationConstant = usemCi ? m.getRadiationConstant() : m.getRadiationConstantInMBecquerel();
+                double distanceInCm = calculateDistance(myRelativeLocation[0], myRelativeLocation[1], m.getX(), m.getY()) * 100;
+                double temp = radiationConstant * radiationActivity / Math.pow(distanceInCm, 2); //in R/h
+                temp = temp * 0.0093296636672371; //In Sievert/h
+                temp = temp * 1000000; //in microSievert/h
                 result += temp < 0 ? 0 : temp;
             }
             return result;

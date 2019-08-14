@@ -29,6 +29,12 @@
         android:layout_height="wrap_content"
         android:text="Use predefined radiation constants" />
 
+    <Switch
+        android:id="@+id/activityInmCi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Activity in mCi (or MBq)" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
