@@ -1,5 +1,6 @@
 package com.sck.RadiationEmulator;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -37,14 +38,13 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
     /**
      * This handler receives a message from onNdefPushComplete
      */
+    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MESSAGE_SENT:
-                    Toast.makeText(getApplicationContext(), "Sent our sources!", Toast.LENGTH_LONG).show();
-                    break;
-            }
+            if (msg.what == MESSAGE_SENT)
+                Toast.makeText(getApplicationContext(), "Sent our sources!", Toast.LENGTH_LONG).show();
+
         }
     };
     private World world;

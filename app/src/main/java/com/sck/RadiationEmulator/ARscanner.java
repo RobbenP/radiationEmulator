@@ -365,7 +365,7 @@ public class ARscanner extends AppCompatActivity {
             //text += " 3D distance is " + String.format("%.2f", World.calculateDistance(arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tx(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().tz(), arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().ty(), node.getWorldPosition().x, node.getWorldPosition().z, node.getWorldPosition().y)) + "\n";
 
 
-            text += "My relative coordinates are " + String.format(Locale.ENGLISH, "%.2f", myCoords[0]) + "," + String.format("%.2f", myCoords[1]) + "\n";
+            text += "My relative coordinates are " + String.format(Locale.ENGLISH, "%.2f", myCoords[0]) + "," + String.format(Locale.ENGLISH, "%.2f", myCoords[1]) + "\n";
             //tex += "Distance between nodes is " + Math.pow(start.getWorldPosition().x - end.getWorldPosition().z,2 ) ;
 
             //TODO maybe add some useful text here
