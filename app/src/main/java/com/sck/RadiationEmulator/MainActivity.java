@@ -53,14 +53,7 @@ public class MainActivity extends AppCompatActivity implements NfcAdapter.Create
     private Button enableBeam;
 
     public static void resetSettings(SharedPreferences settings) {
-
-        //todo move to constants
-
-        ArrayList<ColorAndValue> colorAndValues = new ArrayList<>();
-        colorAndValues.add(new ColorAndValue(-16711936, 50));
-        colorAndValues.add(new ColorAndValue(-256, 100));
-        colorAndValues.add(new ColorAndValue(-32768, 150));
-        colorAndValues.add(new ColorAndValue(-65536, Integer.MAX_VALUE));
+        ArrayList<ColorAndValue> colorAndValues = Constants.GET_COLORS_AND_VALUES();
         Collections.sort(colorAndValues);
 
         Gson gson = new Gson();
