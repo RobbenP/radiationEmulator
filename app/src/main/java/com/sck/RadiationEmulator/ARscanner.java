@@ -236,14 +236,16 @@ public class ARscanner extends AppCompatActivity {
         int len = colorAndValues.size();
         int slowestInterval = 2000; //2 sec
         int fastestInterval = 400; // 0.4 sec
+        int lowestInterval = 300;
         int step = (slowestInterval - fastestInterval) / len;
         for (ColorAndValue cv : colorAndValues) {
             if (measurementHere < cv.getValue()) {
                 int i = colorAndValues.indexOf(cv);
                 waitTimeInMiliSeconds = slowestInterval - (i * step);
-                break;
+                return;
             }
         }
+        waitTimeInMiliSeconds = lowestInterval; //if it exceeds all values in the list
     }
 
     /**
