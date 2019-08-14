@@ -63,7 +63,7 @@ Pros:
 * No need for extra materials like print outs
 * More accurate (?)
 
-## Models EmulatedMeasurement and World
+## Models
 
 ### EmulatedMeasurement
 
@@ -73,11 +73,17 @@ This class is used to store a measurement on a 2D coordinate, 2D because height 
 
 This class stores a list of all the EmulatedMeasurements and a static field for the virtual world size. It also provides methods to get the distance between points in the world, to translate the real world coordinates to the coordinates in the virtual world and a method to calculate the measurement on a certain point.
 
-#### Calculating measurement
+### RadiationSource
 
-For now it just calculates the distance between your location and the measurements and subtracts the distance from the measurement, if it's less than zero it becomes zero.
+This is a simple class that can store the name of a source and the exposure rate constant. It is used to show sources by name in the SetUpWorld screen in a drop-down menu.
 
-This is probably not the right way to do it, but it provides a method which can always be altered in a later stage.
+### ColorAndValue
+
+Another simple class that stores 2 integers one representing a color the other a value. This is used to determine the color of the chart in ARscanner, if the measurement is lower than the value of `ColorAndValue.getValue` the chart will get the color of `ColorAndValue.getColor`.
+
+### Constants
+
+Final class containing mostly string constants used get settings from `SharedPreferences`, but also a couple of other constants used throughout the application.
 
 ## Build warning
 

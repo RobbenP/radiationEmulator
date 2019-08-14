@@ -3,6 +3,8 @@ package com.sck.RadiationEmulator.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Locale;
+
 /**
  * An EmulatedMeasurement are 2D coordinates (X and Y) and a measurement.
  */
@@ -87,7 +89,7 @@ public class EmulatedMeasurement implements Parcelable {
 
     @Override
     public String toString() {
-        return "X = " + x + ", Y = " + y + " and radiation constant = " + radiationConstant + " with " + radiationSourceActivity + "mCi.";
+        return "X = " + x + ", Y = " + y + " and radiation constant = " + radiationConstant + " with " + String.format(Locale.ENGLISH, "%.2f", radiationSourceActivity) + "mCi.";
     }
 
     @Override
