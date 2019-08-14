@@ -220,6 +220,7 @@ public class World implements Parcelable {
                 temp = temp * 0.0093296636672371; //In Sievert/h
                 temp = temp * 1000000; //in microSievert/h
                 result += temp < 0 ? 0 : temp;
+
             }
             return result;
         }

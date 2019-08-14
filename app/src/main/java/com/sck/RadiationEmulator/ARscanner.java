@@ -22,6 +22,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -89,6 +91,8 @@ public class ARscanner extends AppCompatActivity {
     private ImageView fitToScanView;
     private BarChart barChart;
     private TextView measurement;
+    private Integer waitTimeInMiliSeconds;
+    private long lastBeep = 0;
 
     /**
      * Returns false and displays an error message if Sceneform can not run, true if Sceneform can run
@@ -160,6 +164,7 @@ public class ARscanner extends AppCompatActivity {
         });
     }
 
+
     /**
      * Sets up the barchart that displays the measurement on screen
      *
@@ -199,14 +204,7 @@ public class ARscanner extends AppCompatActivity {
      * @return a color based on the settings
      */
     private int getColorBasedOnMeasurement(double measurement) {
-//        int[] values = {50, 100, 150};
-//        int[] colors = {R.color.green, R.color.yellow, R.color.orange, R.color.red};
-//        ArrayList<ColorAndValue> colorAndValues = new ArrayList<>();
-//        colorAndValues.add(new ColorAndValue(R.color.red, Integer.MAX_VALUE));
-//        colorAndValues.add(new ColorAndValue(R.color.orange, 150));
-//        colorAndValues.add(new ColorAndValue(R.color.green, 50));
-//        colorAndValues.add(new ColorAndValue(R.color.yellow, 100));
-//        Collections.sort(colorAndValues);
+
         Gson gson = new Gson();
         Type type = new TypeToken<ArrayList<ColorAndValue>>() {
         }.getType();
@@ -218,12 +216,34 @@ public class ARscanner extends AppCompatActivity {
             if (measurement < cv.getValue()) return cv.getColor();
         }
         return colorAndValues.get(colorAndValues.size() - 1).getColor();
-//        for (int index = 0; index < values.length; index++) {
-//            if (measurement < values[index]) return colors[index];
-//        }
-//        return colors[colors.length - 1];
 
+    }
 
+    /**
+     * if you get higher measurements it should beep faster
+     * uses same logic as the colorcalculator
+     *
+     * @param measurementHere measurement we base the beep interval on
+     */
+    private void setUpBeeps(double measurementHere) { //todo test this and maybe improve it, written in a hurry. Also add an option to disable beeps in the settings
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<ColorAndValue>>() {
+        }.getType();
+        SharedPreferences settings = getSharedPreferences(Constants.SHAREDPREFERENCES_FOR_SETTINGS_FILE_NAME, MODE_PRIVATE);
+        String jsonColorAndValues = settings.getString(Constants.LIST_OF_VALUES_WITH_COLORS_FOR_BARCHART, "");
+        ArrayList<ColorAndValue> colorAndValues = gson.fromJson(jsonColorAndValues, type);
+        Collections.sort(colorAndValues);
+        int len = colorAndValues.size();
+        int slowestInterval = 2000; //2 sec
+        int fastestInterval = 400; // 0.4 sec
+        int step = (slowestInterval - fastestInterval) / len;
+        for (ColorAndValue cv : colorAndValues) {
+            if (measurementHere < cv.getValue()) {
+                int i = colorAndValues.indexOf(cv);
+                waitTimeInMiliSeconds = slowestInterval - (i * step);
+                break;
+            }
+        }
     }
 
     /**
@@ -305,7 +325,7 @@ public class ARscanner extends AppCompatActivity {
      * Executes on every update. Updates all the text in the view and starts the image recognition
      */
     private void cameraMoved() {
-
+        beepWhenTheMeasurementsGetHigh();
         if (USE_AUGMENTED_IMAGES) recognizeImage();
 
 //        Log.d("Mijn debug", "cameraMoved: " + arFragment.getArSceneView().getArFrame().getCamera().getDisplayOrientedPose().toString());
@@ -332,6 +352,7 @@ public class ARscanner extends AppCompatActivity {
             String text = "Measurement here = " + measurementHere + "\n";
             myTextView.setText(text);
             setupBarChart(measurementHere);
+            setUpBeeps(measurementHere);
             measurement.setVisibility(View.VISIBLE);
             measurement.setText(String.format(Locale.ENGLISH, "%.2f", measurementHere) + "μSv/h");
             measurement.setTextColor(getColorBasedOnMeasurement(measurementHere));
@@ -372,6 +393,18 @@ public class ARscanner extends AppCompatActivity {
             myTextView.append(text);
         } else myTextView.append("Waiting for start and end point te be set. \n");
 
+    }
+
+
+    private void beepWhenTheMeasurementsGetHigh() {
+        if (waitTimeInMiliSeconds != null) {
+            long timeNow = System.currentTimeMillis();
+            if (timeNow - lastBeep >= waitTimeInMiliSeconds) {
+                lastBeep = System.currentTimeMillis();
+                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                toneGen1.startTone(ToneGenerator.TONE_CDMA_PIP, 150);
+            }
+        }
     }
 
     /**
